@@ -16,10 +16,8 @@
 
 package xyz.wallpanel.app
 
-import android.R.attr
 import android.content.ComponentCallbacks2
 import android.content.Context
-import android.os.Process.myPid
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.os.StrictMode.VmPolicy
@@ -28,7 +26,6 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
 import xyz.wallpanel.app.di.DaggerApplicationComponent
-import xyz.wallpanel.app.utils.CrashlyticsDebugTree
 import xyz.wallpanel.app.utils.LauncherShortcuts
 import xyz.wallpanel.app.utils.WallpanelDebugTree
 
@@ -46,9 +43,6 @@ class WallPanel : DaggerApplication() {
             // Gives clickable links to the issue in the Android Studio Logcat
             Timber.plant(WallpanelDebugTree())
             // Timber.plant(Timber.DebugTree())
-        } else {
-            Timber.plant(CrashlyticsDebugTree())
-            // Timber.plant(CrashlyticsTree())
         }
         strictMode()
         LauncherShortcuts.createShortcuts(this)

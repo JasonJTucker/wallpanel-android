@@ -22,8 +22,6 @@ plugins {
     id 'kotlin-kapt' // Allows for Kotlin annotation processors
     //id 'androidx.navigation.safeargs.kotlin'
     //id 'dagger.hilt.android.plugin'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
 }
 
 def versionMajor = 0
@@ -167,7 +165,6 @@ dependencies {
 
     // LiveData + ViewModel
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation 'com.google.firebase:firebase-analytics:21.1.1'
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
 
@@ -217,17 +214,17 @@ dependencies {
     // |  _| | | | |  __/ |_) | (_| \__ \  __/
     // |_|   |_|_|  \___|_.__/ \__,_|___/\___|
     //
-    implementation 'com.google.firebase:firebase-core:21.1.1'
-
-    // Import the Firebase BoM (see: https://firebase.google.com/docs/android/learn-more#bom)
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation platform('com.google.firebase:firebase-bom:29.3.1')
-
-    // For an optimal experience using Crashlytics, add the Firebase SDK
-    // for Google Analytics. This is recommended, but not required.
-    implementation 'com.google.firebase:firebase-analytics'
-    // Firebase Crashlytics (Kotlin)
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+//    implementation 'com.google.firebase:firebase-core:21.1.1'
+//
+//    // Import the Firebase BoM (see: https://firebase.google.com/docs/android/learn-more#bom)
+//    // When using the BoM, you don't specify versions in Firebase library dependencies
+//    implementation platform('com.google.firebase:firebase-bom:29.3.1')
+//
+//    // For an optimal experience using Crashlytics, add the Firebase SDK
+//    // for Google Analytics. This is recommended, but not required.
+//    implementation 'com.google.firebase:firebase-analytics'
+//    // Firebase Crashlytics (Kotlin)
+//    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     // Unit tests
     testImplementation 'junit:junit:4.+'
