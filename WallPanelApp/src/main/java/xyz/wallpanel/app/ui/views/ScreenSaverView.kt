@@ -59,6 +59,7 @@ class ScreenSaverView : RelativeLayout {
 
     val calendar: Calendar = Calendar.getInstance()
 
+    private val moveIncrement = 50 // Adjust the increment as needed
     private val timeRunnable = object : Runnable {
         override fun run() {
             val date = Date()
@@ -74,9 +75,28 @@ class ScreenSaverView : RelativeLayout {
             parentWidth = binding.screenSaverView.width
             parentHeight = binding.screenSaverView.height
 
-            val offset = 60L - calendar.get(Calendar.SECOND)
-            timeHandler?.postDelayed(this, TimeUnit.SECONDS.toMillis(offset))
+//            try {
+//                if (width > 0 && height > 0 && parentWidth > 0 && parentHeight > 0) {
+//                    if (parentHeight - width > 0) {
+//                        val newX = binding.screenSaverClockLayout.x + getRandomOffset()
+//                        binding.screenSaverClockLayout.x = newX.coerceIn(0f, (parentWidth - width).toFloat())
+//                    }
+//                    if (parentHeight - height > 0) {
+//                        val newY = binding.screenSaverClockLayout.y + getRandomOffset()
+//                        binding.screenSaverClockLayout.y = newY.coerceIn(0f, (parentHeight - height).toFloat())
+//                    }
+//                }
+//            } catch (e: IllegalArgumentException) {
+//                Timber.e(e.message)
+//            }
+
+//            val offset = 60L - calendar.get(Calendar.SECOND)
+//            timeHandler?.postDelayed(this, TimeUnit.SECONDS.toMillis(offset))
         }
+
+//        private fun getRandomOffset(): Int {
+//            return (Random().nextInt(2 * moveIncrement + 1) - moveIncrement)
+//        }
     }
 
     private val wallPaperRunnable = object : Runnable {
