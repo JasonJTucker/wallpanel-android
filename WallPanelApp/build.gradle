@@ -88,6 +88,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     buildFeatures {
@@ -207,24 +208,6 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-release:2.9.1'
     // Optional: detect retained objects. This helps but is not required.
     releaseImplementation 'com.squareup.leakcanary:leakcanary-object-watcher-android:2.9.1'
-
-    //  _____ _          _
-    // |  ___(_)_ __ ___| |__   __ _ ___  ___
-    // | |_  | | '__/ _ \ '_ \ / _` / __|/ _ \
-    // |  _| | | | |  __/ |_) | (_| \__ \  __/
-    // |_|   |_|_|  \___|_.__/ \__,_|___/\___|
-    //
-//    implementation 'com.google.firebase:firebase-core:21.1.1'
-//
-//    // Import the Firebase BoM (see: https://firebase.google.com/docs/android/learn-more#bom)
-//    // When using the BoM, you don't specify versions in Firebase library dependencies
-//    implementation platform('com.google.firebase:firebase-bom:29.3.1')
-//
-//    // For an optimal experience using Crashlytics, add the Firebase SDK
-//    // for Google Analytics. This is recommended, but not required.
-//    implementation 'com.google.firebase:firebase-analytics'
-//    // Firebase Crashlytics (Kotlin)
-//    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     // Unit tests
     testImplementation 'junit:junit:4.+'
