@@ -16,7 +16,6 @@
 
 plugins {
     id 'com.android.application'
-    id 'com.github.sgtsilvio.gradle.android-retrofix'
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'kotlin-kapt' // Allows for Kotlin annotation processors
@@ -64,12 +63,12 @@ android {
         generateStubs = true
         correctErrorTypes = true
     }
-    compileSdkVersion 33
+    compileSdk 33
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "xyz.wallpanel.app"
-        minSdkVersion 19
-        targetSdkVersion 33
+        minSdk 19
+        targetSdk 33
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
         multiDexEnabled true
@@ -93,6 +92,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     flavorDimensions "default"
@@ -104,11 +104,11 @@ android {
             buildConfigField "String", BASE_ENVIRONMENT, '"DEV_ENVIRONMENT"'
             applicationId "xyz.wallpanel.app"
             versionName "${versionMajor}.${versionMinor}.${versionPatch} Build ${versionBuild}-DEV"
-            buildConfigField 'Integer', 'CODE', CODE()
-            buildConfigField 'String', 'HASS_URL', "\"" + HASS_URL() +"\""
-            buildConfigField 'String', 'BROKER', "\"" + BROKER() +"\""
-            buildConfigField 'String', 'BROKER_PASS', "\"" + BROKER_PASS() +"\""
-            buildConfigField 'String', 'BROKER_USERNAME', "\"" + BROKER_USERNAME() +"\""
+            buildConfigField 'Integer', 'CODE', '1234'
+            buildConfigField 'String', 'HASS_URL', '""'
+            buildConfigField 'String', 'BROKER', '""'
+            buildConfigField 'String', 'BROKER_USERNAME', '""'
+            buildConfigField 'String', 'BROKER_PASS', '""'
         }
         qa {
             dimension "default"
@@ -130,8 +130,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     packagingOptions {
         resources {
