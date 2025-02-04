@@ -37,7 +37,6 @@ import xyz.wallpanel.app.ui.activities.BrowserActivityNative;
 
 public class NotificationUtils extends ContextWrapper {
 
-    private static final int NOTIFICATION_ID = 1138;
     public static final String ANDROID_CHANNEL_ID = "xyz.wallpanel.app.ANDROID";
     public static String ANDROID_CHANNEL_NAME;
     private NotificationManager notificationManager;
@@ -124,12 +123,5 @@ public class NotificationUtils extends ContextWrapper {
                 .setLocalOnly(true)
                 .setColor(color)
                 .setAutoCancel(false);
-    }
-
-    public void clearNotification() {
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManager != null) {
-            notificationManager.cancelAll();
-        }
     }
 }

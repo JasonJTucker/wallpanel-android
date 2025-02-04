@@ -373,7 +373,7 @@ constructor(private val context: Context) {
                     override fun onUpdate(p0: Detector.Detections<Barcode>, p1: Barcode) {
                         super.onUpdate(p0, p1)
                         if (cameraCallback != null && configuration.cameraQRCodeEnabled) {
-                            Timber.d("Barcode: " + p1.displayValue)
+                            Timber.d("Barcode: ${p1.displayValue}")
                             cameraCallback?.onQRCode(p1.displayValue)
                         }
                     }
@@ -395,12 +395,12 @@ constructor(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    private fun initCamera(camerId: Int, fsp: Float): CameraSource {
+    private fun initCamera(cameraId: Int, fsp: Float): CameraSource {
         return CameraSource.Builder(context, multiDetector!!)
                 .setRequestedFps(fsp)
                 .setAutoFocusEnabled(true)
                 .setRequestedPreviewSize(640, 480)
-                .setFacing(camerId)
+                .setFacing(cameraId)
                 .build()
     }
 

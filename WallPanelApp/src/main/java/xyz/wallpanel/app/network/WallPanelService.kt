@@ -429,7 +429,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         }
     }
 
-    // TODO text to speech requies content type 'Content-Type': 'application/json; charset=UTF-8'
+    // TODO text to speech requires content type 'Content-Type': 'application/json; charset=UTF-8'
     private fun startHttp() {
         if (httpServer == null && configuration.httpEnabled) {
             Timber.d("startHttp")
@@ -447,7 +447,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                 response.send("")
             }
             httpServer?.listen(AsyncServer.getDefault(), configuration.httpPort)
-            Timber.i("Started HTTP server on " + configuration.httpPort)
+            Timber.i("Started HTTP server on ${configuration.httpPort}")
         }
 
         if (httpServer != null && configuration.httpRestEnabled) {
@@ -515,7 +515,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                         } else {
                             mJpegSockets.removeAt(i)
                             i--
-                            Timber.i("MJPEG Session Count is " + mJpegSockets.size)
+                            Timber.i("MJPEG Session Count is ${mJpegSockets.size}")
                         }
                         i++
                     }
@@ -595,7 +595,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             response.send("Max streams exceeded")
             response.end()
         }
-        Timber.i("MJPEG Session Count is " + mJpegSockets.size)
+        Timber.i("MJPEG Session Count is ${mJpegSockets.size}")
     }
 
     private fun processCommand(commandJson: JSONObject): Boolean {
@@ -661,7 +661,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                 setVolume((commandJson.getInt(COMMAND_VOLUME).toFloat() / 100))
             }
         } catch (ex: JSONException) {
-            Timber.e("Invalid JSON passed as a command: " + commandJson.toString())
+            Timber.e("Invalid JSON passed as a command: ${commandJson.toString()}")
             return false
         }
 
@@ -699,7 +699,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         try {
             audioPlayer!!.setDataSource(audioUrl)
         } catch (e: IOException) {
-            Timber.e("audioPlayer: An error occurred while preparing audio (" + e.message + ")")
+            Timber.e("audioPlayer: An error occurred while preparing audio ( ${e.message} )")
             audioPlayerBusy = false
             audioPlayer?.reset()
             return
@@ -824,7 +824,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         val deviceJson = JSONObject()
         deviceJson.put("identifiers", listOf("wallpanel_${configuration.mqttClientId}"))
         deviceJson.put("name", configuration.mqttDiscoveryDeviceName)
-        deviceJson.put("manufacturer", Build.MANUFACTURER.toLowerCase().capitalize())
+        deviceJson.put("manufacturer", Build.MANUFACTURER.lowercase().capitalize())
         deviceJson.put("model", Build.MODEL)
         return deviceJson
     }
@@ -832,7 +832,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
     private fun getSensorDiscoveryDef(displayName: String, stateTopic: String, deviceClass: String?, unit: String?, sensorId: String): JSONObject {
         val discoveryDef = JSONObject()
         if (configuration.mqttLegacyDiscoveryEntities) {
-            discoveryDef.put("name", "${configuration.mqttDiscoveryDeviceName} ${displayName}")
+            discoveryDef.put("name", "${configuration.mqttDiscoveryDeviceName} $displayName")
         } else {
             discoveryDef.put("name", displayName)
         }
@@ -909,8 +909,8 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             val sensors = sensorReader.getSensors()
             for (sensor in sensors) {
                 if (sensor.sensorType != null) {
-                    val sensorDiscoveryDef = getSensorDiscoveryDef(sensor.displayName!!, "sensor/${sensor.sensorType!!}", sensor.deviceClass, sensor.unit, sensor.sensorType!!)
-                    publishMessage("${configuration.mqttDiscoveryTopic}/sensor/${configuration.mqttClientId}/${sensor.sensorType!!}/config", sensorDiscoveryDef.toString(), true)
+                    val sensorDiscoveryDef = getSensorDiscoveryDef(sensor.displayName!!, "sensor/${sensor.sensorType}", sensor.deviceClass, sensor.unit, sensor.sensorType!!)
+                    publishMessage("${configuration.mqttDiscoveryTopic}/sensor/${configuration.mqttClientId}/${sensor.sensorType}/config", sensorDiscoveryDef.toString(), true)
                 }
             }
 
@@ -922,7 +922,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             val sensors = sensorReader.getSensors()
             for (sensor in sensors) {
                 if (sensor.sensorType != null) {
-                    publishMessage("${configuration.mqttDiscoveryTopic}/sensor/${configuration.mqttClientId}/${sensor.sensorType!!}/config", "", false)
+                    publishMessage("${configuration.mqttDiscoveryTopic}/sensor/${configuration.mqttClientId}/${sensor.sensorType}/config", "", false)
                 }
             }
         }
@@ -1128,7 +1128,6 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         const val ONGOING_NOTIFICATION_ID = 1
         const val BROADCAST_EVENT_URL_CHANGE = "BROADCAST_EVENT_URL_CHANGE"
         const val BROADCAST_EVENT_SCREEN_TOUCH = "BROADCAST_EVENT_SCREEN_TOUCH"
-        const val SCREEN_WAKE_TIME = 30000L
         const val BROADCAST_ALERT_MESSAGE = "BROADCAST_ALERT_MESSAGE"
         const val BROADCAST_CLEAR_ALERT_MESSAGE = "BROADCAST_CLEAR_ALERT_MESSAGE"
         const val BROADCAST_TOAST_MESSAGE = "BROADCAST_TOAST_MESSAGE"
@@ -1137,6 +1136,5 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         const val BROADCAST_SCREEN_WAKE_ON = "BROADCAST_SCREEN_WAKE_ON"
         const val BROADCAST_SCREEN_WAKE_OFF = "BROADCAST_SCREEN_WAKE_OFF"
         const val BROADCAST_SCREEN_BRIGHTNESS_CHANGE = "BROADCAST_SCREEN_BRIGHTNESS_CHANGE"
-        const val BROADCAST_CONNTED = "BROADCAST_SCREEN_BRIGHTNESS_CHANGE"
     }
 }

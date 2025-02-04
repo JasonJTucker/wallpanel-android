@@ -45,7 +45,7 @@ class MotionDetector private constructor(private val minLuma: Int, private val m
             throw IllegalArgumentException("No frame supplied.")
         } else {
             val byteBuffer = frame.grayscaleImageData
-            val bytes = byteBuffer.array()
+            val bytes = byteBuffer?.array()
             val w = frame.metadata.width
             val h = frame.metadata.height
             val sparseArray = SparseArray<Motion>()
