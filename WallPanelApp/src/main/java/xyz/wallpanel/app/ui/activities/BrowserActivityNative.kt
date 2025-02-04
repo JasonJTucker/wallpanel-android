@@ -147,7 +147,7 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
                 initWebPageLoad()
             }
             mOnScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-                binding.swipeContainer?.isEnabled = webView.scrollY == 0
+                binding.swipeContainer.isEnabled = webView.scrollY == 0
             }
             binding.swipeContainer.viewTreeObserver.addOnScrollChangedListener(mOnScrollChangedListener)
         } else {

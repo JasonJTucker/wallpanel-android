@@ -18,7 +18,7 @@ package xyz.wallpanel.app.utils;
 
 public class StringUtils {
 
-    private static String strSeparator = ",";
+    private static final String strSeparator = ",";
 
     public static String convertArrayToString(String[] array){
         StringBuilder str = new StringBuilder();

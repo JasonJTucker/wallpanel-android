@@ -52,14 +52,14 @@ class MQTTModule (base: Context?, var mqttOptions: MQTTOptions, private val list
                     mqtt3Service = MQTT3Service(applicationContext, mqttOptions, this)
                 } catch (t: Throwable) {
                     // TODO should we loop back and try again?
-                    Timber.e("Could not create MQTTPublisher: " + t.message)
+                    Timber.e("Could not create MQTTPublisher: ${t.message}")
                 }
             } else {
                 try {
                     mqtt3Service?.reconfigure(applicationContext, mqttOptions, this)
                 } catch (t: Throwable) {
                     // TODO should we loop back and try again?
-                    Timber.e("Could not create MQTTPublisher: " + t.message)
+                    Timber.e("Could not create MQTTPublisher: ${t.message}")
                 }
             }
         } else {
@@ -68,14 +68,14 @@ class MQTTModule (base: Context?, var mqttOptions: MQTTOptions, private val list
                     mqtt5Service = MQTT5Service(applicationContext, mqttOptions, this)
                 } catch (t: Throwable) {
                     // TODO should we loop back and try again?
-                    Timber.e("Could not create MQTTPublisher: " + t.message)
+                    Timber.e("Could not create MQTTPublisher: ${t.message}")
                 }
             } else {
                 try {
                     mqtt5Service?.reconfigure(applicationContext, mqttOptions, this)
                 } catch (t: Throwable) {
                     // TODO should we loop back and try again?
-                    Timber.e("Could not create MQTTPublisher: " + t.message)
+                    Timber.e("Could not create MQTTPublisher: ${t.message}")
                 }
             }
         }
