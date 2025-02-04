@@ -36,7 +36,7 @@ sensor:
     unit_of_measurement: "%"
     value_template: '{{ value_json.value }}'
     
- - platform: mqtt
+  - platform: mqtt
     state_topic: "wallpanel/mywallpanel/sensor/temperature"
     name: "WallPanel Temperature"
     unit_of_measurement: "°C"

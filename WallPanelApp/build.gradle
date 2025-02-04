@@ -24,7 +24,7 @@ plugins {
 }
 
 def versionMajor = 0
-def versionMinor = 12
+def versionMinor = 13
 def versionPatch = 0
 def versionBuild = 0 // bump for dog food builds, public betas, etc.
 
@@ -64,7 +64,6 @@ android {
         correctErrorTypes = true
     }
     compileSdk 33
-    buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "xyz.wallpanel.app"
         minSdk 19
@@ -95,7 +94,7 @@ android {
         buildConfig true
     }
 
-    flavorDimensions "default"
+    flavorDimensions = ["default"]
 
     productFlavors {
         def BASE_ENVIRONMENT = "BASE_ENVIRONMENT"
@@ -218,7 +217,7 @@ dependencies {
 
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         force "com.android.support:appcompat-v7:$versions.support"
     }

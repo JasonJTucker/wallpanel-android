@@ -27,11 +27,11 @@ public class Comparer {
     private int yBoxes;
     private int xPixelsPerBox;
     private int yPixelsPerBox;
-    private int xLeftOver;
-    private int yLeftOver;
-    private int rowWidthInPix;
-    private int colWidthInPix;
-    private int leniency;
+    private final int xLeftOver;
+    private final int yLeftOver;
+    private final int rowWidthInPix;
+    private final int colWidthInPix;
+    private final int leniency;
     private int debugMode; // 1: textual indication of change, 2: difference of
                            // factors
 
@@ -52,9 +52,9 @@ public class Comparer {
         this.debugMode = 0;
 
         // how many points per box
-        this.xPixelsPerBox = (int) (Math.floor(s1.getWidth() / this.xBoxes));
+        this.xPixelsPerBox = (int) ((double) (s1.getWidth() / this.xBoxes));
         if (xPixelsPerBox <= 0) xPixelsPerBox = 1;
-        this.yPixelsPerBox = (int) (Math.floor(s1.getHeight() / this.yBoxes));
+        this.yPixelsPerBox = (int) ((double) (s1.getHeight() / this.yBoxes));
         if (yPixelsPerBox <= 0) yPixelsPerBox = 1;
 
         this.xLeftOver = s1.getWidth() - (this.xBoxes * this.xPixelsPerBox);
@@ -227,7 +227,7 @@ public class Comparer {
             for (int x = 0; x < xBoxes; x++) {
                 diff = variance[y][x];
                 if (debugMode == 1) output.append((diff > leniency) ? 'X' : ' ');
-                if (debugMode == 2) output.append(diff + ((x < (xBoxes - 1)) ? "," : ""));
+                if (debugMode == 2) output.append(diff).append((x < (xBoxes - 1)) ? "," : "");
             }
             output.append("|\n");
         }

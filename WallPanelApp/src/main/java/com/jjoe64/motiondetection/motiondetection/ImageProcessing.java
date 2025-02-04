@@ -66,9 +66,9 @@ public abstract class ImageProcessing {
      * @return Integer array representing an HSL pixel.
      */
     public static int[] convertToHSL(int r, int g, int b) {
-        float red = r / 255;
-        float green = g / 255;
-        float blue = b / 255;
+        float red = (float) r / 255;
+        float green = (float) g / 255;
+        float blue = (float) b / 255;
 
         float minComponent = Math.min(red, Math.min(green, blue));
         float maxComponent = Math.max(red, Math.max(green, blue));

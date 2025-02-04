@@ -21,7 +21,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import android.hardware.Camera
-import android.util.Log
 import xyz.wallpanel.app.modules.CameraCallback
 import xyz.wallpanel.app.modules.CameraReader
 import xyz.wallpanel.app.persistence.Configuration
@@ -79,7 +78,7 @@ constructor(application: Application, private val configuration: Configuration,
                         height)
                 c.release()
             } catch (e: Exception) {
-                Log.e("CameraReader", "Had a problem reading camera $i")
+                Timber.e("CameraReader: Had a problem reading camera $i")
                 e.printStackTrace()
                 description = java.text.MessageFormat.format("{0}: Error", i)
             }

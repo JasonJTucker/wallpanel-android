@@ -21,7 +21,6 @@ public class State {
     private int[] map = null;
     private int width;
     private int height;
-    private int average;
 
     public State(int[] data, int width, int height) {
         if (data == null) throw new NullPointerException();
@@ -31,13 +30,13 @@ public class State {
         this.height = height;
 
         // build map and stats
-        this.average = 0;
+        int average = 0;
         for (int y = 0, xy = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++, xy++) {
-                this.average += data[xy];
+                average += data[xy];
             }
         }
-        this.average = (this.average / (this.width * this.height));
+        average = (average / (this.width * this.height));
     }
 
     /**
@@ -73,7 +72,7 @@ public class State {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("h=" + height + " w=" + width + "\n");
+        output.append("h=").append(height).append(" w=").append(width).append("\n");
         for (int y = 0, xy = 0; y < height; y++) {
             output.append('|');
             for (int x = 0; x < width; x++, xy++) {

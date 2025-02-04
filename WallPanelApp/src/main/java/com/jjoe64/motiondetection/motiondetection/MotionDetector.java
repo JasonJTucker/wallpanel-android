@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Handler;
-import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -13,9 +11,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import timber.log.Timber;
+
 public class MotionDetector {
     class MotionDetectorThread extends Thread {
-        private AtomicBoolean isRunning = new AtomicBoolean(true);
+        private final AtomicBoolean isRunning = new AtomicBoolean(true);
 
         public void stopDetection() {
             isRunning.set(false);
@@ -71,19 +71,19 @@ public class MotionDetector {
     private long checkInterval = 500;
     private long lastCheck = 0;
     private MotionDetectorCallback motionDetectorCallback;
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
-    private AtomicReference<byte[]> nextData = new AtomicReference<>();
-    private AtomicInteger nextWidth = new AtomicInteger();
-    private AtomicInteger nextHeight = new AtomicInteger();
+    private final AtomicReference<byte[]> nextData = new AtomicReference<>();
+    private final AtomicInteger nextWidth = new AtomicInteger();
+    private final AtomicInteger nextHeight = new AtomicInteger();
     private int minLuma = 1000;
     private MotionDetectorThread worker;
 
     private Camera mCamera;
     private boolean inPreview;
     private SurfaceHolder previewHolder;
-    private Context mContext;
-    private SurfaceView mSurface;
+    private final Context mContext;
+    private final SurfaceView mSurface;
 
     public MotionDetector(Context context, SurfaceView previewSurface) {
         detector = new AggregateLumaMotionDetection();
@@ -155,7 +155,7 @@ public class MotionDetector {
         return c; // returns null if camera is unavailable
     }
 
-    private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
+    private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
 
         /**
          * {@inheritDoc}
@@ -171,7 +171,7 @@ public class MotionDetector {
     };
 
 
-    private SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
+    private final SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
 
         /**
          * {@inheritDoc}
@@ -182,7 +182,7 @@ public class MotionDetector {
                 mCamera.setPreviewDisplay(previewHolder);
                 mCamera.setPreviewCallback(previewCallback);
             } catch (Throwable t) {
-                Log.e("MotionDetector", "Exception in setPreviewDisplay()", t);
+                Timber.e("MotionDetector: Exception in setPreviewDisplay() $t");
             }
         }
 
@@ -195,7 +195,7 @@ public class MotionDetector {
             Camera.Size size = getBestPreviewSize(width, height, parameters);
             if (size != null) {
                 parameters.setPreviewSize(size.width, size.height);
-                Log.d("MotionDetector", "Using width=" + size.width + " height=" + size.height);
+                Timber.d("MotionDetector: Using width=" + size.width + " height=" + size.height);
             }
             mCamera.setParameters(parameters);
             mCamera.startPreview();
