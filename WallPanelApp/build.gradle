@@ -24,7 +24,7 @@ plugins {
 }
 
 def versionMajor = 0
-def versionMinor = 13
+def versionMinor = 15
 def versionPatch = 0
 def versionBuild = 0 // bump for dog food builds, public betas, etc.
 
@@ -202,11 +202,11 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     // LeakCanary for releases
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-release:2.9.1'
+    //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-release:2.9.1'
     // Optional: detect retained objects. This helps but is not required.
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-object-watcher-android:2.9.1'
+    //releaseImplementation 'com.squareup.leakcanary:leakcanary-object-watcher-android:2.9.1'
 
     // Unit tests
     testImplementation 'junit:junit:4.+'

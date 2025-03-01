@@ -91,13 +91,13 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
         super.onCreate(savedInstanceState)
 
         if (BuildConfig.DEBUG) {
-            configuration.mqttBroker = BuildConfig.BROKER
+            //configuration.mqttBroker = BuildConfig.BROKER
             configuration.mqttUsername = BuildConfig.BROKER_USERNAME
             configuration.mqttPassword = BuildConfig.BROKER_PASS
             configuration.appLaunchUrl = BuildConfig.HASS_URL
             configuration.isFirstTime = false
             configuration.settingsCode = BuildConfig.CODE.toString()
-            configuration.hasClockScreenSaver = true
+            configuration.hasClockScreenSaver = false
         }
 
         binding = ActivityBrowserBinding.inflate(layoutInflater)
@@ -171,7 +171,9 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
 
     override fun onDestroy() {
         super.onDestroy()
-        codeBottomSheet?.dismiss()
+        this.codeBottomSheet?.dismiss()
+        this.codeBottomSheet = null;
+
     }
 
     override fun openSettings() {
@@ -377,10 +379,10 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
 
 
     private fun showCodeBottomSheet() {
-        codeBottomSheet = CodeBottomSheetFragment.newInstance(configuration.settingsCode,
+        this.codeBottomSheet = CodeBottomSheetFragment.newInstance(configuration.settingsCode,
             object : CodeBottomSheetFragment.OnAlarmCodeFragmentListener {
                 override fun onComplete(code: String) {
-                    codeBottomSheet?.dismiss()
+                    this@BrowserActivityNative.codeBottomSheet?.dismiss()
                     openSettings()
                 }
 

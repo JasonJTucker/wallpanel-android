@@ -45,7 +45,7 @@ class WallPanel : DaggerApplication() {
             Timber.plant(WallpanelDebugTree())
             // Timber.plant(Timber.DebugTree())
         } else {
-            Timber.plant(CrashlyticsDebugTree())
+            Timber.plant(WallpanelDebugTree())
             // Timber.plant(CrashlyticsTree())
         }
         strictMode()
@@ -78,8 +78,9 @@ class WallPanel : DaggerApplication() {
     }
 
     override fun onLowMemory() {
+        Timber.v("Reached function onLowMemory")
         super.onLowMemory()
-        System.gc()
+        //System.gc()
     }
 
     override fun onTrimMemory(level: Int) {
@@ -87,13 +88,13 @@ class WallPanel : DaggerApplication() {
         when (level) {
             ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN -> {
                 Timber.v("The user interface has moved to the background.")
-                Runtime.getRuntime().gc()
+                //Runtime.getRuntime().gc()
             }
             ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE,
             ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW,
             ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL -> {
                 Timber.v("If the event is TRIM_MEMORY_RUNNING_CRITICAL, then the system will begin killing background processes.")
-                Runtime.getRuntime().gc()
+                //Runtime.getRuntime().gc()
             }
             ComponentCallbacks2.TRIM_MEMORY_BACKGROUND,
             ComponentCallbacks2.TRIM_MEMORY_MODERATE,
@@ -101,7 +102,7 @@ class WallPanel : DaggerApplication() {
                 Timber.v("If the event is TRIM_MEMORY_COMPLETE, the process will be one of the first to be terminated.")
                 //val processId: Int = Process.myPid()
                 //Process.killProcess(processId)
-                Runtime.getRuntime().gc()
+                //Runtime.getRuntime().gc()
             }
             else -> {
                 Timber.v("The app received an unrecognized memory level value from the system. Treat this as a generic low-memory message.")
