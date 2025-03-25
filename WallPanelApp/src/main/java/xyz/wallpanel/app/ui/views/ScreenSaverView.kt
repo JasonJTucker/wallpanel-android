@@ -119,22 +119,21 @@ class ScreenSaverView : RelativeLayout {
             setClockViews()
             timeHandler = Handler(Looper.getMainLooper())
             timeHandler?.postDelayed(timeRunnable, 10)
-            binding.screenSaverClockLayout.visibility = View.VISIBLE
-            //screenSaverWebViewLayout.visibility = View.GONE
+            binding.screenSaverClockLayout.visibility = VISIBLE
         } else {
-            binding.screenSaverClockLayout.visibility = View.GONE
+            binding.screenSaverClockLayout.visibility = GONE
         }
 
         // show optional screensaver layers
         if (showWallpaper) {
             wallPaperHandler = Handler(Looper.getMainLooper())
             wallPaperHandler?.postDelayed(wallPaperRunnable, 10)
-            binding.screenSaverImageLayout.visibility  = View.VISIBLE
-            binding.screenSaverWebViewLayout.visibility = View.GONE
+            binding.screenSaverImageLayout.visibility  = VISIBLE
+            binding.screenSaverWebViewLayout.visibility = GONE
         } else if (showWebPage) {
             //c
-            binding.screenSaverImageLayout.visibility  = View.GONE
-            binding.screenSaverWebViewLayout.visibility = View.VISIBLE
+            binding.screenSaverImageLayout.visibility  = GONE
+            binding.screenSaverWebViewLayout.visibility = VISIBLE
             startWebScreenSaver(webUrl)
         }
     }
@@ -150,7 +149,7 @@ class ScreenSaverView : RelativeLayout {
 
     private fun setScreenSaverView() {
         Glide.with(this.context.applicationContext)
-                .load(String.format(UNSPLASH_IT_URL, binding.screenSaverView.width, binding.screenSaverView.height))
+                .load(String.format(LOREM_PICSUM_URL, binding.screenSaverView.width, binding.screenSaverView.height))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .centerCrop()
                 .skipMemoryCache(true)
@@ -198,6 +197,7 @@ class ScreenSaverView : RelativeLayout {
             }
 
             // TODO we need to load SSL certificates
+            @SuppressLint("WebViewClientOnReceivedSslError")
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler?, error: SslError?) {
                 if (!certPermissionsShown) {
                     var message = context.getString(R.string.dialog_message_ssl_generic)
@@ -254,6 +254,6 @@ class ScreenSaverView : RelativeLayout {
     }
 
     companion object {
-        const val UNSPLASH_IT_URL = "http://unsplash.it/%s/%s?random"
+        const val LOREM_PICSUM_URL = "http://picsum.photos/%s/%s?random"
     }
 }
