@@ -24,9 +24,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Browser
-import android.view.*
-import android.webkit.*
-import android.widget.Button
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.webkit.CookieManager
+import android.webkit.PermissionRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -35,17 +41,17 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
+import timber.log.Timber
+import xyz.wallpanel.app.BuildConfig
+import xyz.wallpanel.app.R
 import xyz.wallpanel.app.databinding.ActivityBrowserBinding
 import xyz.wallpanel.app.network.ConnectionLiveData
 import xyz.wallpanel.app.ui.fragments.CodeBottomSheetFragment
-import xyz.wallpanel.app.utils.InternalWebChromeClient
 import xyz.wallpanel.app.ui.views.WebClientCallback
+import xyz.wallpanel.app.utils.InternalWebChromeClient
 import xyz.wallpanel.app.utils.InternalWebClient
-import xyz.wallpanel.app.BuildConfig
-import xyz.wallpanel.app.R
-import timber.log.Timber
 import java.net.URISyntaxException
-import java.util.*
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 
@@ -172,7 +178,7 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
     override fun onDestroy() {
         super.onDestroy()
         this.codeBottomSheet?.dismiss()
-        this.codeBottomSheet = null;
+        this.codeBottomSheet = null
 
     }
 
@@ -200,7 +206,7 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
                 selector.addCategory(Intent.CATEGORY_BROWSABLE)
                 selector.setComponent(null)
             }
-            launchIntent.putExtra(Browser.EXTRA_APPLICATION_ID, webView.context.packageName);
+            launchIntent.putExtra(Browser.EXTRA_APPLICATION_ID, webView.context.packageName)
             webView.context.startActivity(launchIntent)
         } else {
             webView.loadUrl(url)
@@ -231,7 +237,6 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
         webSettings?.javaScriptEnabled = true
         webSettings?.domStorageEnabled = true
         webSettings?.databaseEnabled = true
-        webSettings?.saveFormData = true
         webSettings?.javaScriptCanOpenWindowsAutomatically = true
         webSettings?.cacheMode = WebSettings.LOAD_NO_CACHE
         webSettings?.allowFileAccess = true
@@ -240,9 +245,6 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
         webSettings?.setSupportZoom(true)
         webSettings?.loadWithOverviewMode = true
         webSettings?.useWideViewPort = true
-        webSettings?.pluginState = WebSettings.PluginState.ON
-        webSettings?.setRenderPriority(WebSettings.RenderPriority.HIGH)
-        // webSettings?.cacheMode = WebSettings.LOAD_NO_CACHE;
         webSettings?.mediaPlaybackRequiresUserGesture = false
 
         if (userAgent.isNotEmpty()) {

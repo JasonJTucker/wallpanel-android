@@ -88,7 +88,7 @@ class SettingsCodeView : BaseView {
 
         showFilledPins(enteredCode.length)
 
-        if (enteredCode.length == BaseView.Companion.MAX_CODE_LENGTH) {
+        if (enteredCode.length == MAX_CODE_LENGTH) {
             codeComplete = true
             handler.postDelayed(delayRunnable, 500)
         }

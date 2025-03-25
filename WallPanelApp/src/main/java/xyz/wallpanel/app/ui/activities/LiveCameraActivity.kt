@@ -84,7 +84,7 @@ class LiveCameraActivity : DaggerAppCompatActivity() {
         if(configuration.hardwareAccelerated && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         }
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetectionViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[DetectionViewModel::class.java]
 
         // Check for the camera permission before accessing the camera.
         val rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -159,7 +159,7 @@ class LiveCameraActivity : DaggerAppCompatActivity() {
 
     private fun startUpdatePicture() {
         updateHandler = Handler(Looper.getMainLooper())
-        updateHandler!!.postDelayed(updatePicture, interval.toLong())
+        updateHandler!!.postDelayed(updatePicture, interval)
     }
 
     private fun stopUpdatePicture() {

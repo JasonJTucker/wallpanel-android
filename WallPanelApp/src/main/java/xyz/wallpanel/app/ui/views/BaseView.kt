@@ -28,7 +28,6 @@ abstract class BaseView : LinearLayout {
 
     private lateinit var binding: DialogCodeSetBinding
 
-    var currentCode: String = ""
     var codeComplete = false
     var enteredCode = ""
 
@@ -87,10 +86,6 @@ abstract class BaseView : LinearLayout {
     }
 
 
-    fun setCode(code: String) {
-        currentCode = code
-    }
-
     abstract fun onCancel()
     abstract fun removePinCode()
     abstract fun addPinCode(code: String)
@@ -133,6 +128,6 @@ abstract class BaseView : LinearLayout {
     }
 
     companion object {
-        val MAX_CODE_LENGTH = 4
+        const val MAX_CODE_LENGTH = 4
     }
 }

@@ -51,7 +51,6 @@ class CustomWebView @JvmOverloads constructor(
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
-        settings.saveFormData = true
         settings.javaScriptCanOpenWindowsAutomatically = true
         settings.cacheMode = WebSettings.LOAD_NO_CACHE
         settings.allowFileAccess = true
@@ -60,10 +59,8 @@ class CustomWebView @JvmOverloads constructor(
         settings.setSupportZoom(true)
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
-        settings.pluginState = WebSettings.PluginState.ON
-        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         // settings.cacheMode = WebSettings.LOAD_NO_CACHE;
-        settings.mediaPlaybackRequiresUserGesture = false;
+        settings.mediaPlaybackRequiresUserGesture = false
 
         /*if (userAgent.isNotEmpty()) {
             settings.userAgentString = userAgent

@@ -18,7 +18,6 @@ package xyz.wallpanel.app.ui.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.net.http.SslError
 import android.os.Build
 import android.os.Handler
@@ -27,19 +26,25 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.MotionEvent
 import android.view.View
-import android.webkit.*
+import android.webkit.CookieManager
+import android.webkit.JsResult
+import android.webkit.SslErrorHandler
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import xyz.wallpanel.app.R
-import xyz.wallpanel.app.persistence.Configuration.Companion.WEB_SCREEN_SAVER
 import timber.log.Timber
+import xyz.wallpanel.app.R
 import xyz.wallpanel.app.databinding.DialogScreenSaverBinding
-import java.util.*
+import xyz.wallpanel.app.persistence.Configuration.Companion.WEB_SCREEN_SAVER
+import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class ScreenSaverView : RelativeLayout {
@@ -67,9 +72,6 @@ class ScreenSaverView : RelativeLayout {
             val currentDayString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE)
             binding.screenSaverClock.text = currentTimeString
             binding.screenSaverDay.text = currentDayString
-
-            val width = binding.screenSaverClockLayout.width
-            val height = binding.screenSaverClockLayout.height
 
             parentWidth = binding.screenSaverView.width
             parentHeight = binding.screenSaverView.height
@@ -141,6 +143,9 @@ class ScreenSaverView : RelativeLayout {
     private fun setClockViews() {
         val initialRegular = binding.screenSaverClock.textSize
         binding.screenSaverClock.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialRegular + 200)
+
+        val initialDateRegular = binding.screenSaverDay.textSize
+        binding.screenSaverDay.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialDateRegular + 15)
     }
 
     private fun setScreenSaverView() {
@@ -149,7 +154,7 @@ class ScreenSaverView : RelativeLayout {
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .centerCrop()
                 .skipMemoryCache(true)
-                .into(binding.screenSaverImageLayout);
+                .into(binding.screenSaverImageLayout)
     }
 
     private fun closeView() {
@@ -206,15 +211,15 @@ class ScreenSaverView : RelativeLayout {
                     AlertDialog.Builder(context, R.style.CustomAlertDialog)
                             .setTitle(context.getString(R.string.dialog_title_ssl_error))
                             .setMessage(message)
-                            .setPositiveButton(android.R.string.ok, DialogInterface.OnClickListener { _, _ ->
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
                                 certPermissionsShown = true
                                 handler?.proceed()
-                            })
-                            .setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { _, _ ->
+                            }
+                        .setNegativeButton(android.R.string.cancel) { _, _ ->
                                 certPermissionsShown = false
                                 handler?.cancel()
-                            })
-                            .show()
+                            }
+                        .show()
                 } else {
                     // we have already shown permissions, no need to show again on page refreshes or when page auto-refreshes itself
                     handler?.proceed()

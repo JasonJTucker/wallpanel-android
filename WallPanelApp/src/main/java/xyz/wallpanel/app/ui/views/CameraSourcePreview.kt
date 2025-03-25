@@ -63,8 +63,8 @@ class CameraSourcePreview(private val mContext: Context, attrs: AttributeSet) : 
         mLayout = LinearLayout(mContext)
         addView(mLayout)
 
-        mLayout.gravity = Gravity.CENTER_HORIZONTAL;
-        mLayout.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
+        mLayout.gravity = Gravity.CENTER_HORIZONTAL
+        mLayout.setHorizontalGravity(Gravity.CENTER_HORIZONTAL)
 
         mSurfaceView = SurfaceView(mContext)
         mSurfaceView.holder.addCallback(SurfaceCallback())
@@ -166,6 +166,5 @@ class CameraSourcePreview(private val mContext: Context, attrs: AttributeSet) : 
         }*/
     }
 
-    companion object {
-    }
+    companion object
 }
