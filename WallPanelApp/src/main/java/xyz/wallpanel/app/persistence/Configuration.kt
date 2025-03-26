@@ -356,6 +356,14 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         get() = getBoolPref(R.string.key_setting_ignore_ssl_errors,
                 R.string.default_setting_ignore_ssl_errors)
 
+    var weatherCurrentConditions: String
+        get() = sharedPreferences.getString(WEATHER_CURRENT_CONDITIONS, "dummyconditions").orEmpty()
+        set(value) = this.sharedPreferences.edit().putString(WEATHER_CURRENT_CONDITIONS, value).apply()
+
+    var weatherCurrentTemperature: String
+        get() = sharedPreferences.getString(WEATHER_CURRENT_TEMPERATURE, "dummytemp").orEmpty()
+        set(value) = this.sharedPreferences.edit().putString(WEATHER_CURRENT_TEMPERATURE, value).apply()
+
     fun hasCameraDetections(): Boolean {
         return cameraEnabled && (cameraMotionEnabled || cameraQRCodeEnabled || cameraFaceEnabled || httpMJPEGEnabled)
     }
@@ -406,5 +414,8 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         private val PREF_WEB_SCREENSAVER_URL = "pref_web_screensaver_url"
         private val PREF_WEB_SCREENSAVER = "pref_web_screensaver"
         const val WEB_SCREEN_SAVER = "https://wallpanel.xyz"
+        // additions for receiving weather via MQTT
+        var WEATHER_CURRENT_CONDITIONS = "weather_current_conditions"
+        var WEATHER_CURRENT_TEMPERATURE = "weather_current_temperature"
     }
 }

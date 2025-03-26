@@ -26,7 +26,6 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JsResult
 import android.webkit.SslErrorHandler
@@ -43,6 +42,11 @@ import timber.log.Timber
 import xyz.wallpanel.app.R
 import xyz.wallpanel.app.databinding.DialogScreenSaverBinding
 import xyz.wallpanel.app.persistence.Configuration.Companion.WEB_SCREEN_SAVER
+// additions for weather information via MQTT
+import xyz.wallpanel.app.persistence.Configuration.Companion.WEATHER_CURRENT_CONDITIONS
+import xyz.wallpanel.app.persistence.Configuration.Companion.WEATHER_CURRENT_TEMPERATURE
+import xyz.wallpanel.app.persistence.Configuration
+//
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -70,8 +74,11 @@ class ScreenSaverView : RelativeLayout {
             calendar.time = date
             val currentTimeString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_TIME)
             val currentDayString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE)
+            val currentWeatherString = "${Configuration.WEATHER_CURRENT_CONDITIONS}, ${Configuration.WEATHER_CURRENT_TEMPERATURE}"
+
             binding.screenSaverClock.text = currentTimeString
             binding.screenSaverDay.text = currentDayString
+            binding.screenSaverWeather.text = currentWeatherString
 
             parentWidth = binding.screenSaverView.width
             parentHeight = binding.screenSaverView.height
@@ -145,6 +152,9 @@ class ScreenSaverView : RelativeLayout {
 
         val initialDateRegular = binding.screenSaverDay.textSize
         binding.screenSaverDay.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialDateRegular + 15)
+
+        val initialWeatherRegular = binding.screenSaverWeather.textSize
+        binding.screenSaverWeather.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialWeatherRegular + 15)
     }
 
     private fun setScreenSaverView() {

@@ -58,6 +58,10 @@ import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_AUDIO
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_BRIGHTNESS
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CAMERA
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CLEAR_CACHE
+// additions for receiving weather via MQTT
+import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_CONDITIONS
+import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_TEMPERATURE
+//
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_EVAL
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_RELAUNCH
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_RELOAD
@@ -659,6 +663,13 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             }
             if (commandJson.has(COMMAND_VOLUME)) {
                 setVolume((commandJson.getInt(COMMAND_VOLUME).toFloat() / 100))
+            }
+            // additions for receiving weather information via MQTT
+            if (commandJson.has(COMMAND_CURRENT_CONDITIONS)) {
+                configuration.weatherCurrentConditions = commandJson.getString(COMMAND_CURRENT_CONDITIONS)
+            }
+            if (commandJson.has(COMMAND_CURRENT_TEMPERATURE)) {
+                configuration.weatherCurrentTemperature = commandJson.getString(COMMAND_CURRENT_TEMPERATURE)
             }
         } catch (ex: JSONException) {
             Timber.e("Invalid JSON passed as a command: ${commandJson.toString()}")

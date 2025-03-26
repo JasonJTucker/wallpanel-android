@@ -74,6 +74,16 @@
             android:textSize="40sp"
             tools:text="Monday 1st November 2019" />
 
+        <TextView
+            android:id="@+id/screenSaverWeather"
+            style="@style/TextAppearance.Clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="start"
+            android:textSize="40sp"
+            tools:text="" />
+
     </LinearLayout>
 
 </xyz.wallpanel.app.ui.views.ScreenSaverView>
