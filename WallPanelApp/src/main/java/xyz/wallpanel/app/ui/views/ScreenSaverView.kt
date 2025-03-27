@@ -41,12 +41,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import timber.log.Timber
 import xyz.wallpanel.app.R
 import xyz.wallpanel.app.databinding.DialogScreenSaverBinding
+import xyz.wallpanel.app.modules.WeatherInfo
 import xyz.wallpanel.app.persistence.Configuration.Companion.WEB_SCREEN_SAVER
-// additions for weather information via MQTT
-import xyz.wallpanel.app.persistence.Configuration.Companion.WEATHER_CURRENT_CONDITIONS
-import xyz.wallpanel.app.persistence.Configuration.Companion.WEATHER_CURRENT_TEMPERATURE
-import xyz.wallpanel.app.persistence.Configuration
-//
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -65,6 +61,7 @@ class ScreenSaverView : RelativeLayout {
     private var rotationInterval = 900L
     private var webUrl = WEB_SCREEN_SAVER
     private var certPermissionsShown = false
+    private var weatherStuff: WeatherInfo? = null
 
     val calendar: Calendar = Calendar.getInstance()
 
@@ -74,11 +71,10 @@ class ScreenSaverView : RelativeLayout {
             calendar.time = date
             val currentTimeString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_TIME)
             val currentDayString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE)
-            val currentWeatherString = "${Configuration.WEATHER_CURRENT_CONDITIONS}, ${Configuration.WEATHER_CURRENT_TEMPERATURE}"
 
             binding.screenSaverClock.text = currentTimeString
             binding.screenSaverDay.text = currentDayString
-            binding.screenSaverWeather.text = currentWeatherString
+            //binding.screenSaverWeather.text = weatherStuff.toString()
 
             parentWidth = binding.screenSaverView.width
             parentHeight = binding.screenSaverView.height
@@ -114,12 +110,13 @@ class ScreenSaverView : RelativeLayout {
         wallPaperHandler?.removeCallbacks(wallPaperRunnable)
     }
 
-    fun init(hasWeb: Boolean, urlWeb: String, hasWallpaper: Boolean, hasClock: Boolean, rotationDelay: Long) {
+    fun init(hasWeb: Boolean, urlWeb: String, hasWallpaper: Boolean, hasClock: Boolean, rotationDelay: Long, weatherInfo: WeatherInfo) {
         rotationInterval = rotationDelay
         showWebPage = hasWeb
         webUrl = urlWeb
         showWallpaper = hasWallpaper
         showClock = hasClock
+        weatherStuff = weatherInfo
 
         // always allow the clock screensaver to be displayed
         if(showClock) {
@@ -127,6 +124,7 @@ class ScreenSaverView : RelativeLayout {
             timeHandler = Handler(Looper.getMainLooper())
             timeHandler?.postDelayed(timeRunnable, 10)
             binding.screenSaverClockLayout.visibility = VISIBLE
+            (weatherStuff!!.currentTemperature + "°C, " + weatherStuff!!.currentConditions).also { binding.screenSaverWeather.text = it }
         } else {
             binding.screenSaverClockLayout.visibility = GONE
         }
@@ -177,7 +175,7 @@ class ScreenSaverView : RelativeLayout {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun loadWebPage(url: String) {
-        Timber.d("loadWebPage url ${url}")
+        Timber.d("loadWebPage url $url")
         configureWebSettings("")
         clearCache()
         binding.screenSaverWebView.webChromeClient = object : WebChromeClient() {

@@ -26,7 +26,6 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
 import xyz.wallpanel.app.di.DaggerApplicationComponent
-import xyz.wallpanel.app.utils.CrashlyticsDebugTree
 import xyz.wallpanel.app.utils.LauncherShortcuts
 import xyz.wallpanel.app.utils.WallpanelDebugTree
 
@@ -43,10 +42,8 @@ class WallPanel : DaggerApplication() {
         if (BuildConfig.DEBUG) {
             // Gives clickable links to the issue in the Android Studio Logcat
             Timber.plant(WallpanelDebugTree())
-            // Timber.plant(Timber.DebugTree())
         } else {
             Timber.plant(WallpanelDebugTree())
-            // Timber.plant(CrashlyticsTree())
         }
         strictMode()
         LauncherShortcuts.createShortcuts(this)

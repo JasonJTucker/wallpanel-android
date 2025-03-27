@@ -34,6 +34,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import dagger.android.support.DaggerAppCompatActivity
 import timber.log.Timber
 import xyz.wallpanel.app.AppExceptionHandler
+import xyz.wallpanel.app.modules.WeatherInfo
 import xyz.wallpanel.app.network.MQTTOptions
 import xyz.wallpanel.app.network.WallPanelService
 import xyz.wallpanel.app.network.WallPanelService.Companion.BROADCAST_ALERT_MESSAGE
@@ -73,6 +74,7 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
     private var hasWakeScreen = false
     var displayProgress = true
     var zoomLevel = 1.0f
+    var weatherInfo: WeatherInfo = WeatherInfo()
 
     // handler for received data from service for screen operations
     private val mWakeBroadcastReceiver = object : BroadcastReceiver() {
@@ -135,6 +137,16 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
                 hideScreenSaver()
             } else if (BROADCAST_SERVICE_STARTED == intent.action && !isFinishing) {
                 //firstLoadUrl() // load the url after service started
+            } else if (BROADCAST_ACTION_WEATHER_TEMP_UPDATE == intent.action && !isFinishing) {
+                Timber.d("Broadcast weather temp update")
+                val message = intent.getStringExtra(BROADCAST_ACTION_WEATHER_TEMP_UPDATE)
+                weatherInfo.currentTemperature = message.toString()
+                Timber.d(weatherInfo.currentTemperature)
+            } else if (BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE == intent.action && !isFinishing) {
+                Timber.d("Broadcast weather conditions update")
+                val message = intent.getStringExtra(BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE)
+                weatherInfo.currentConditions = message.toString()
+                Timber.d(weatherInfo.currentConditions)
             }
         }
     }
@@ -180,6 +192,8 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
         filter.addAction(BROADCAST_ALERT_MESSAGE)
         filter.addAction(BROADCAST_TOAST_MESSAGE)
         filter.addAction(BROADCAST_SERVICE_STARTED)
+        filter.addAction(BROADCAST_ACTION_WEATHER_TEMP_UPDATE)
+        filter.addAction(BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE)
         val bm = LocalBroadcastManager.getInstance(this)
         bm.registerReceiver(mBroadcastReceiver, filter)
         resetInactivityTimer()
@@ -353,7 +367,8 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
                 configuration.hasScreenSaverWallpaper,
                 configuration.hasClockScreenSaver,
                 configuration.imageRotation.toLong(),
-                configuration.appPreventSleep
+                configuration.appPreventSleep,
+                weatherInfo
             )
             resetScreenBrightness(true)
         }
@@ -377,6 +392,8 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
         const val BROADCAST_ACTION_CLEAR_BROWSER_CACHE = "BROADCAST_ACTION_CLEAR_BROWSER_CACHE"
         const val BROADCAST_ACTION_RELOAD_PAGE = "BROADCAST_ACTION_RELOAD_PAGE"
         const val BROADCAST_ACTION_OPEN_SETTINGS = "BROADCAST_ACTION_OPEN_SETTINGS"
+        const val BROADCAST_ACTION_WEATHER_TEMP_UPDATE = "BROADCAST_ACTION_WEATHER_TEMP_UPDATE"
+        const val BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE = "BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE"
         const val REQUEST_CODE_PERMISSION_AUDIO = 12
         const val REQUEST_CODE_PERMISSION_CAMERA = 13
     }

@@ -33,6 +33,7 @@ import xyz.wallpanel.app.databinding.DialogCodeSetBinding
 import xyz.wallpanel.app.databinding.DialogScreenSaverBinding
 import xyz.wallpanel.app.ui.views.SettingsCodeView
 import timber.log.Timber
+import xyz.wallpanel.app.modules.WeatherInfo
 
 /**
  * Dialog utils
@@ -168,7 +169,8 @@ class DialogUtils(base: Context?) : ContextWrapper(base), LifecycleObserver {
                         hasWallpaper: Boolean,
                         hasClock: Boolean,
                         rotationInterval: Long,
-                        preventSleep: Boolean) {
+                        preventSleep: Boolean,
+                        weatherInfo: WeatherInfo) {
         if (screenSaverDialog != null && screenSaverDialog!!.isShowing) {
             return
         }
@@ -177,7 +179,7 @@ class DialogUtils(base: Context?) : ContextWrapper(base), LifecycleObserver {
         val binding = DialogScreenSaverBinding.inflate(inflater, null, false)
         val screenSaverView = binding.screenSaverView
         screenSaverView.setOnClickListener(onClickListener)
-        screenSaverView.init(hasWeb, webUrl, hasWallpaper, hasClock, rotationInterval)
+        screenSaverView.init(hasWeb, webUrl, hasWallpaper, hasClock, rotationInterval, weatherInfo)
         screenSaverDialog = buildImmersiveDialog(activity, true, screenSaverView, true)
         if (screenSaverDialog != null && preventSleep) {
             screenSaverDialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

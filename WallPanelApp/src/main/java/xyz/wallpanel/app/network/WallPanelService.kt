@@ -53,6 +53,8 @@ import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_A
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_LOAD_URL
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_OPEN_SETTINGS
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_RELOAD_PAGE
+import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_WEATHER_TEMP_UPDATE
+import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE
 import xyz.wallpanel.app.utils.MqttUtils
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_AUDIO
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_BRIGHTNESS
@@ -666,10 +668,10 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             }
             // additions for receiving weather information via MQTT
             if (commandJson.has(COMMAND_CURRENT_CONDITIONS)) {
-                configuration.weatherCurrentConditions = commandJson.getString(COMMAND_CURRENT_CONDITIONS)
+                updateWeather(BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE, commandJson.getString(COMMAND_CURRENT_CONDITIONS))
             }
             if (commandJson.has(COMMAND_CURRENT_TEMPERATURE)) {
-                configuration.weatherCurrentTemperature = commandJson.getString(COMMAND_CURRENT_TEMPERATURE)
+                updateWeather(BROADCAST_ACTION_WEATHER_TEMP_UPDATE, commandJson.getString(COMMAND_CURRENT_TEMPERATURE))
             }
         } catch (ex: JSONException) {
             Timber.e("Invalid JSON passed as a command: ${commandJson.toString()}")
@@ -693,6 +695,13 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         Timber.d("browseUrl")
         val intent = Intent(BROADCAST_ACTION_LOAD_URL)
         intent.putExtra(BROADCAST_ACTION_LOAD_URL, url)
+        val bm = LocalBroadcastManager.getInstance(applicationContext)
+        bm.sendBroadcast(intent)
+    }
+
+    private fun updateWeather(type: String, data: String) {
+        val intent = Intent(type)
+        intent.putExtra(type, data)
         val bm = LocalBroadcastManager.getInstance(applicationContext)
         bm.sendBroadcast(intent)
     }

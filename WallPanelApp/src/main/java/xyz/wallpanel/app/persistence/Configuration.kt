@@ -16,10 +16,12 @@
 
 package xyz.wallpanel.app.persistence
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import xyz.wallpanel.app.R
 import javax.inject.Inject
+import androidx.core.content.edit
 
 class Configuration @Inject
 constructor(private val context: Context, private val sharedPreferences: SharedPreferences) {
@@ -27,7 +29,7 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
     // APP
     var isFirstTime: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_FIRST_TIME, true)
-        set(value) = this.sharedPreferences.edit().putBoolean(PREF_FIRST_TIME, value).apply()
+        set(value) = this.sharedPreferences.edit() { putBoolean(PREF_FIRST_TIME, value) }
 
     val appPreventSleep: Boolean
         get() = getBoolPref(R.string.key_setting_app_preventsleep,
@@ -40,8 +42,8 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
             val cur = this.sharedPreferences.getString(PREF_SETTINGS_CODE_STRING, "1234").orEmpty()
             return if(prev > 0) {
                 val preStr = String.format("%04d", prev) // pad to 4 with 0's leading
-                this.sharedPreferences.edit().putInt(PREF_SETTINGS_CODE, 0).apply()
-                this.sharedPreferences.edit().putString(PREF_SETTINGS_CODE_STRING, preStr).apply()
+                this.sharedPreferences.edit() { putInt(PREF_SETTINGS_CODE, 0) }
+                this.sharedPreferences.edit() { putString(PREF_SETTINGS_CODE_STRING, preStr) }
                 prev.toString()
             } else {
                 cur
@@ -51,11 +53,11 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
 
     var fullScreen: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_FULL_SCREEN, true)
-        set(value) = this.sharedPreferences.edit().putBoolean(PREF_FULL_SCREEN, value).apply()
+        set(value) = this.sharedPreferences.edit() { putBoolean(PREF_FULL_SCREEN, value) }
 
     var useDarkTheme: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_DARK_THEME, false)
-        set(value) = this.sharedPreferences.edit().putBoolean(PREF_DARK_THEME, value).apply()
+        set(value) = this.sharedPreferences.edit() { putBoolean(PREF_DARK_THEME, value) }
 
     var settingsTransparent: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_SETTINGS_TRANSPARENT, false)
@@ -68,7 +70,7 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
     var writeScreenPermissionsShown: Boolean
         get() = sharedPreferences.getBoolean(PREF_WRITE_SCREEN_PERMISSIONS, false)
         set(value) {
-            sharedPreferences.edit().putBoolean(PREF_WRITE_SCREEN_PERMISSIONS, value).apply()
+            sharedPreferences.edit() { putBoolean(PREF_WRITE_SCREEN_PERMISSIONS, value) }
         }
 
     var cameraPermissionsShown: Boolean
@@ -356,14 +358,6 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         get() = getBoolPref(R.string.key_setting_ignore_ssl_errors,
                 R.string.default_setting_ignore_ssl_errors)
 
-    var weatherCurrentConditions: String
-        get() = sharedPreferences.getString(WEATHER_CURRENT_CONDITIONS, "dummyconditions").orEmpty()
-        set(value) = this.sharedPreferences.edit().putString(WEATHER_CURRENT_CONDITIONS, value).apply()
-
-    var weatherCurrentTemperature: String
-        get() = sharedPreferences.getString(WEATHER_CURRENT_TEMPERATURE, "dummytemp").orEmpty()
-        set(value) = this.sharedPreferences.edit().putString(WEATHER_CURRENT_TEMPERATURE, value).apply()
-
     fun hasCameraDetections(): Boolean {
         return cameraEnabled && (cameraMotionEnabled || cameraQRCodeEnabled || cameraFaceEnabled || httpMJPEGEnabled)
     }
@@ -414,8 +408,5 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         private val PREF_WEB_SCREENSAVER_URL = "pref_web_screensaver_url"
         private val PREF_WEB_SCREENSAVER = "pref_web_screensaver"
         const val WEB_SCREEN_SAVER = "https://wallpanel.xyz"
-        // additions for receiving weather via MQTT
-        var WEATHER_CURRENT_CONDITIONS = "weather_current_conditions"
-        var WEATHER_CURRENT_TEMPERATURE = "weather_current_temperature"
     }
 }
