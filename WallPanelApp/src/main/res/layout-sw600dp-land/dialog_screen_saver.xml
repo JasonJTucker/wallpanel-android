@@ -74,13 +74,33 @@
             tools:text="Monday 1st November 2019" />
 
         <TextView
+            android:id="@+id/screenSaverSpacer"
+            style="@style/TextAppearance.Clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="start"
+            android:textSize="30sp"
+            tools:text="" />
+
+        <TextView
             android:id="@+id/screenSaverWeather"
             style="@style/TextAppearance.Clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="start"
-            android:textSize="36sp"
+            android:textSize="30sp"
+            tools:text="" />
+
+        <TextView
+            android:id="@+id/screenSaverMoreWeather"
+            style="@style/TextAppearance.Clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="start"
+            android:textSize="24sp"
             tools:text="" />
 
     </LinearLayout>

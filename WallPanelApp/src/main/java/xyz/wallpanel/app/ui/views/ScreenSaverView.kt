@@ -38,6 +38,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import timber.log.Timber
 import xyz.wallpanel.app.R
 import xyz.wallpanel.app.databinding.DialogScreenSaverBinding
@@ -73,7 +74,6 @@ class ScreenSaverView : RelativeLayout {
 
             binding.screenSaverClock.text = currentTimeString
             binding.screenSaverDay.text = currentDayString
-            //binding.screenSaverWeather.text = weatherStuff.toString()
 
             parentWidth = binding.screenSaverView.width
             parentHeight = binding.screenSaverView.height
@@ -115,20 +115,27 @@ class ScreenSaverView : RelativeLayout {
         webUrl = urlWeb
         showWallpaper = hasWallpaper
         showClock = hasClock
-        val weatherStuff = weatherInfo
 
         // always allow the clock screensaver to be displayed
         if(showClock) {
             setClockViews()
+            binding.screenSaverImageLayout.alpha = 0.5f
             timeHandler = Handler(Looper.getMainLooper())
             timeHandler?.postDelayed(timeRunnable, 10)
             binding.screenSaverClockLayout.visibility = VISIBLE
-            if (weatherStuff.current_temperature != "") {
-                (weatherStuff.current_temperature + "°C, " + weatherStuff.current_conditions).also {
+            if (weatherInfo.current_temperature != "") {
+                binding.screenSaverSpacer.text = " "
+                (weatherInfo.current_temperature + "°C, " + weatherInfo.current_conditions + ", wind " + weatherInfo.wind_direction + " " + weatherInfo.wind_speed + " km/h").also {
                     binding.screenSaverWeather.text = it
                 }
+                //("Hi: " + weatherStuff.high_temperature + "°C, Lo: " + weatherStuff.low_temperature + "°C, POP: " + weatherStuff.chance_of_precip + "%").also {
+                ("Hi: " + weatherInfo.high_temperature + "°C, Lo: " + weatherInfo.low_temperature + "°C").also {
+                    binding.screenSaverMoreWeather.text = it
+                }
             } else {
+                binding.screenSaverSpacer.text = ""
                 binding.screenSaverWeather.text = ""
+                binding.screenSaverMoreWeather.text = ""
             }
         } else {
             binding.screenSaverClockLayout.visibility = GONE
@@ -165,6 +172,7 @@ class ScreenSaverView : RelativeLayout {
                 .load(String.format(LOREM_PICSUM_URL, binding.screenSaverView.width, binding.screenSaverView.height))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .centerCrop()
+                .transition(withCrossFade())
                 .skipMemoryCache(true)
                 .into(binding.screenSaverImageLayout)
     }

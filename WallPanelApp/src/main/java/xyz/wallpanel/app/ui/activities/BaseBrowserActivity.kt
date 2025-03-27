@@ -78,7 +78,12 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
     var zoomLevel = 1.0f
     var weatherInfo: WeatherInfo = WeatherInfo(
         current_temperature = "",
-        current_conditions = ""
+        current_conditions = "",
+        high_temperature = "",
+        low_temperature = "",
+        wind_direction = "",
+        wind_speed = "",
+        chance_of_precip = ""
     )
 
     // handler for received data from service for screen operations
@@ -145,9 +150,7 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
             } else if (BROADCAST_ACTION_WEATHER_UPDATE == intent.action && !isFinishing) {
                 Timber.d("Broadcast weather temp update")
                 val jsonString = intent.getStringExtra(BROADCAST_ACTION_WEATHER_UPDATE).toString()
-                Timber.d(jsonString)
                 weatherInfo = Json.decodeFromString<WeatherInfo>(jsonString)
-                Timber.d(weatherInfo.toString())
             }
         }
     }

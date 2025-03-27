@@ -63,6 +63,7 @@ import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CAMERA
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CLEAR_CACHE
 // additions for receiving weather via MQTT
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_CONDITIONS
+import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_TEMPERATURE
 //
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_EVAL
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_RELAUNCH
@@ -667,11 +668,18 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                 setVolume((commandJson.getInt(COMMAND_VOLUME).toFloat() / 100))
             }
             // additions for receiving weather information via MQTT
-            if (commandJson.has(COMMAND_CURRENT_CONDITIONS)) {
+            if (commandJson.has(COMMAND_CURRENT_TEMPERATURE)) {
                 // must be a better way to do this
+                Timber.d("CommandJSON for weather:")
+                Timber.d(commandJson.toString())
                 val newWeather = WeatherInfo(
                     current_temperature = commandJson.getString("current_temperature"),
-                    current_conditions = commandJson.getString("current_conditions")
+                    current_conditions = commandJson.getString("current_conditions"),
+                    high_temperature = commandJson.getString("high_temperature"),
+                    low_temperature = commandJson.getString("low_temperature"),
+                    wind_direction = commandJson.getString("wind_direction"),
+                    wind_speed = commandJson.getString("wind_speed"),
+                    chance_of_precip = commandJson.getString("chance_of_precip")
                 )
                 updateWeather(newWeather)
             }
@@ -702,10 +710,9 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
     }
 
     private fun updateWeather(data: WeatherInfo) {
+        Timber.d("Broadcasting weather update")
         val intent = Intent(BROADCAST_ACTION_WEATHER_UPDATE)
         val jsonData = Json.encodeToString(data)
-        Timber.d("About to broadcast weather update")
-        Timber.d(jsonData)
         intent.putExtra(BROADCAST_ACTION_WEATHER_UPDATE, jsonData)
         val bm = LocalBroadcastManager.getInstance(applicationContext)
         bm.sendBroadcast(intent)
