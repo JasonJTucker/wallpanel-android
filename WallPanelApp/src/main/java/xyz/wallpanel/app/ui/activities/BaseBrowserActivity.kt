@@ -32,6 +32,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import dagger.android.support.DaggerAppCompatActivity
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 import xyz.wallpanel.app.AppExceptionHandler
 import xyz.wallpanel.app.modules.WeatherInfo
@@ -74,7 +76,10 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
     private var hasWakeScreen = false
     var displayProgress = true
     var zoomLevel = 1.0f
-    var weatherInfo: WeatherInfo = WeatherInfo()
+    var weatherInfo: WeatherInfo = WeatherInfo(
+        current_temperature = "",
+        current_conditions = ""
+    )
 
     // handler for received data from service for screen operations
     private val mWakeBroadcastReceiver = object : BroadcastReceiver() {
@@ -137,16 +142,12 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
                 hideScreenSaver()
             } else if (BROADCAST_SERVICE_STARTED == intent.action && !isFinishing) {
                 //firstLoadUrl() // load the url after service started
-            } else if (BROADCAST_ACTION_WEATHER_TEMP_UPDATE == intent.action && !isFinishing) {
+            } else if (BROADCAST_ACTION_WEATHER_UPDATE == intent.action && !isFinishing) {
                 Timber.d("Broadcast weather temp update")
-                val message = intent.getStringExtra(BROADCAST_ACTION_WEATHER_TEMP_UPDATE)
-                weatherInfo.currentTemperature = message.toString()
-                Timber.d(weatherInfo.currentTemperature)
-            } else if (BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE == intent.action && !isFinishing) {
-                Timber.d("Broadcast weather conditions update")
-                val message = intent.getStringExtra(BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE)
-                weatherInfo.currentConditions = message.toString()
-                Timber.d(weatherInfo.currentConditions)
+                val jsonString = intent.getStringExtra(BROADCAST_ACTION_WEATHER_UPDATE).toString()
+                Timber.d(jsonString)
+                weatherInfo = Json.decodeFromString<WeatherInfo>(jsonString)
+                Timber.d(weatherInfo.toString())
             }
         }
     }
@@ -192,8 +193,7 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
         filter.addAction(BROADCAST_ALERT_MESSAGE)
         filter.addAction(BROADCAST_TOAST_MESSAGE)
         filter.addAction(BROADCAST_SERVICE_STARTED)
-        filter.addAction(BROADCAST_ACTION_WEATHER_TEMP_UPDATE)
-        filter.addAction(BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE)
+        filter.addAction(BROADCAST_ACTION_WEATHER_UPDATE)
         val bm = LocalBroadcastManager.getInstance(this)
         bm.registerReceiver(mBroadcastReceiver, filter)
         resetInactivityTimer()
@@ -295,8 +295,8 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
 
     internal fun resetScreen() {
         Timber.d("resetScreen Called")
-        val intent = Intent(WallPanelService.BROADCAST_EVENT_SCREEN_TOUCH)
-        intent.putExtra(WallPanelService.BROADCAST_EVENT_SCREEN_TOUCH, true)
+        val intent = Intent(BROADCAST_EVENT_SCREEN_TOUCH)
+        intent.putExtra(BROADCAST_EVENT_SCREEN_TOUCH, true)
         val bm = LocalBroadcastManager.getInstance(applicationContext)
         bm.sendBroadcast(intent)
     }
@@ -392,8 +392,7 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
         const val BROADCAST_ACTION_CLEAR_BROWSER_CACHE = "BROADCAST_ACTION_CLEAR_BROWSER_CACHE"
         const val BROADCAST_ACTION_RELOAD_PAGE = "BROADCAST_ACTION_RELOAD_PAGE"
         const val BROADCAST_ACTION_OPEN_SETTINGS = "BROADCAST_ACTION_OPEN_SETTINGS"
-        const val BROADCAST_ACTION_WEATHER_TEMP_UPDATE = "BROADCAST_ACTION_WEATHER_TEMP_UPDATE"
-        const val BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE = "BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE"
+        const val BROADCAST_ACTION_WEATHER_UPDATE = "BROADCAST_ACTION_WEATHER_UPDATE"
         const val REQUEST_CODE_PERMISSION_AUDIO = 12
         const val REQUEST_CODE_PERMISSION_CAMERA = 13
     }

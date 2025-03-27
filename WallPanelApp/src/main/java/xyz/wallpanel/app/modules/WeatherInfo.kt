@@ -1,15 +1,14 @@
 package xyz.wallpanel.app.modules
 
-class WeatherInfo {
+import kotlinx.serialization.Serializable
 
-    var currentTemperature: String = ""
-    var currentConditions: String = ""
-    //var highTemperature: String? = null
-    //var lowTemperature: String? = null
-    //var windDirection: String? = null
-    //var windSpeed: String? = null
-    //var chanceOfPrecip: String? = null
-
-    companion object {
-    }
-}
+@Serializable
+data class WeatherInfo(
+    val current_temperature: String,
+    val current_conditions: String,
+    //var highTemperature: String,
+    //var lowTemperature: String,
+    //var windDirection: String,
+    //var windSpeed: String,
+    //var chanceOfPrecip: String
+)

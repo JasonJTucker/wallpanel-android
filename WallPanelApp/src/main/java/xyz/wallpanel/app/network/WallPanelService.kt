@@ -42,6 +42,8 @@ import com.koushikdutta.async.http.server.AsyncHttpServer
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse
 import com.koushikdutta.async.util.Charsets
 import dagger.android.AndroidInjection
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -53,8 +55,7 @@ import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_A
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_LOAD_URL
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_OPEN_SETTINGS
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_RELOAD_PAGE
-import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_WEATHER_TEMP_UPDATE
-import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE
+import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_WEATHER_UPDATE
 import xyz.wallpanel.app.utils.MqttUtils
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_AUDIO
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_BRIGHTNESS
@@ -62,7 +63,6 @@ import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CAMERA
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CLEAR_CACHE
 // additions for receiving weather via MQTT
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_CONDITIONS
-import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_TEMPERATURE
 //
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_EVAL
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_RELAUNCH
@@ -157,7 +157,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         startForeground()
 
         // prepare the lock types we may use
-        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val pm = getSystemService(POWER_SERVICE) as PowerManager
 
         //noinspection deprecation
         partialWakeLock = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
@@ -173,14 +173,14 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         }
 
         // wifi lock
-        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
         wifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL, "wallPanel:wifiLock")
 
         // Some Amazon devices are not seeing this permission so we are trying to check
         val permission = "android.permission.DISABLE_KEYGUARD"
         val checkSelfPermission = ContextCompat.checkSelfPermission(this@WallPanelService, permission)
         if (checkSelfPermission == PackageManager.PERMISSION_GRANTED) {
-            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
             keyguardLock = keyguardManager.newKeyguardLock("ALARM_KEYBOARD_LOCK_TAG")
             keyguardLock!!.disableKeyguard()
         }
@@ -229,11 +229,11 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
     private val isScreenOn: Boolean
         get() {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT_WATCH){
-                val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+                val powerManager = getSystemService(POWER_SERVICE) as PowerManager
                 return powerManager.isScreenOn
             }
             else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH){
-                val displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+                val displayManager = getSystemService(DISPLAY_SERVICE) as DisplayManager
                 for (display in displayManager.displays){
                     return display.state != Display.STATE_OFF
                 }
@@ -668,10 +668,12 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             }
             // additions for receiving weather information via MQTT
             if (commandJson.has(COMMAND_CURRENT_CONDITIONS)) {
-                updateWeather(BROADCAST_ACTION_WEATHER_CONDITIONS_UPDATE, commandJson.getString(COMMAND_CURRENT_CONDITIONS))
-            }
-            if (commandJson.has(COMMAND_CURRENT_TEMPERATURE)) {
-                updateWeather(BROADCAST_ACTION_WEATHER_TEMP_UPDATE, commandJson.getString(COMMAND_CURRENT_TEMPERATURE))
+                // must be a better way to do this
+                val newWeather = WeatherInfo(
+                    current_temperature = commandJson.getString("current_temperature"),
+                    current_conditions = commandJson.getString("current_conditions")
+                )
+                updateWeather(newWeather)
             }
         } catch (ex: JSONException) {
             Timber.e("Invalid JSON passed as a command: ${commandJson.toString()}")
@@ -699,9 +701,12 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         bm.sendBroadcast(intent)
     }
 
-    private fun updateWeather(type: String, data: String) {
-        val intent = Intent(type)
-        intent.putExtra(type, data)
+    private fun updateWeather(data: WeatherInfo) {
+        val intent = Intent(BROADCAST_ACTION_WEATHER_UPDATE)
+        val jsonData = Json.encodeToString(data)
+        Timber.d("About to broadcast weather update")
+        Timber.d(jsonData)
+        intent.putExtra(BROADCAST_ACTION_WEATHER_UPDATE, jsonData)
         val bm = LocalBroadcastManager.getInstance(applicationContext)
         bm.sendBroadcast(intent)
     }
@@ -828,7 +833,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         if (!faceDetected) {
             val data = JSONObject()
             try {
-                data.put(MqttUtils.VALUE, true)
+                data.put(VALUE, true)
             } catch (ex: JSONException) {
                 ex.printStackTrace()
             }
@@ -996,7 +1001,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                 ex.printStackTrace()
             }
             faceDetected = false
-            publishCommand(MqttUtils.COMMAND_SENSOR_FACE, data)
+            publishCommand(COMMAND_SENSOR_FACE, data)
         }
     }
 

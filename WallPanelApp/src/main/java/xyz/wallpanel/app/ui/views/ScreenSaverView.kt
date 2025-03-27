@@ -61,7 +61,6 @@ class ScreenSaverView : RelativeLayout {
     private var rotationInterval = 900L
     private var webUrl = WEB_SCREEN_SAVER
     private var certPermissionsShown = false
-    private var weatherStuff: WeatherInfo? = null
 
     val calendar: Calendar = Calendar.getInstance()
 
@@ -116,7 +115,7 @@ class ScreenSaverView : RelativeLayout {
         webUrl = urlWeb
         showWallpaper = hasWallpaper
         showClock = hasClock
-        weatherStuff = weatherInfo
+        val weatherStuff = weatherInfo
 
         // always allow the clock screensaver to be displayed
         if(showClock) {
@@ -124,7 +123,13 @@ class ScreenSaverView : RelativeLayout {
             timeHandler = Handler(Looper.getMainLooper())
             timeHandler?.postDelayed(timeRunnable, 10)
             binding.screenSaverClockLayout.visibility = VISIBLE
-            (weatherStuff!!.currentTemperature + "°C, " + weatherStuff!!.currentConditions).also { binding.screenSaverWeather.text = it }
+            if (weatherStuff.current_temperature != "") {
+                (weatherStuff.current_temperature + "°C, " + weatherStuff.current_conditions).also {
+                    binding.screenSaverWeather.text = it
+                }
+            } else {
+                binding.screenSaverWeather.text = ""
+            }
         } else {
             binding.screenSaverClockLayout.visibility = GONE
         }
