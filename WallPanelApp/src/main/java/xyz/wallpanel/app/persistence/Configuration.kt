@@ -16,7 +16,6 @@
 
 package xyz.wallpanel.app.persistence
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import xyz.wallpanel.app.R
@@ -49,7 +48,7 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
                 cur
             }
         }
-        set(value) = this.sharedPreferences.edit().putString(PREF_SETTINGS_CODE_STRING, value).apply()
+        set(value) = this.sharedPreferences.edit() { putString(PREF_SETTINGS_CODE_STRING, value) }
 
     var fullScreen: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_FULL_SCREEN, true)
@@ -61,11 +60,11 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
 
     var settingsTransparent: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_SETTINGS_TRANSPARENT, false)
-        set(value) = this.sharedPreferences.edit().putBoolean(PREF_SETTINGS_TRANSPARENT, value).apply()
+        set(value) = this.sharedPreferences.edit() { putBoolean(PREF_SETTINGS_TRANSPARENT, value) }
 
     var settingsDisabled: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_SETTINGS_DISABLE, false)
-        set(value) = this.sharedPreferences.edit().putBoolean(PREF_SETTINGS_DISABLE, value).apply()
+        set(value) = this.sharedPreferences.edit() { putBoolean(PREF_SETTINGS_DISABLE, value) }
 
     var writeScreenPermissionsShown: Boolean
         get() = sharedPreferences.getBoolean(PREF_WRITE_SCREEN_PERMISSIONS, false)
@@ -76,18 +75,28 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
     var cameraPermissionsShown: Boolean
         get() = sharedPreferences.getBoolean(PREF_CAMERA_PERMISSIONS, false)
         set(value) {
-            sharedPreferences.edit().putBoolean(PREF_CAMERA_PERMISSIONS, value).apply()
+            sharedPreferences.edit() { putBoolean(PREF_CAMERA_PERMISSIONS, value) }
         }
 
     var cameraRotate: Float
         get() = this.sharedPreferences.getString(PREF_CAMERA_ROTATE, "0f")!!.toFloat()
-        set(value) = this.sharedPreferences.edit().putString(PREF_CAMERA_ROTATE, value.toString()).apply()
+        set(value) = this.sharedPreferences.edit() {
+            putString(
+                PREF_CAMERA_ROTATE,
+                value.toString()
+            )
+        }
 
     var appLaunchUrl: String
         get() = getStringPref(R.string.key_setting_app_launchurl,
                 R.string.default_setting_app_launchurl)
         set(launchUrl) {
-            sharedPreferences.edit().putString(context.getString(R.string.key_setting_app_launchurl), launchUrl).apply()
+            sharedPreferences.edit() {
+                putString(
+                    context.getString(R.string.key_setting_app_launchurl),
+                    launchUrl
+                )
+            }
             settingsUpdated()
         }
 
@@ -98,25 +107,40 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
     var cameraEnabled: Boolean
         get() = getBoolPref(R.string.key_setting_camera_enabled, R.string.default_setting_camera_enabled)
         set(value) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_setting_camera_enabled), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_setting_camera_enabled),
+                    value
+                )
+            }
         }
 
     var cameraId: Int
         get() = this.sharedPreferences.getInt(context.getString(R.string.setting_camera_cameraid), 0)
         set(value) {
-            this.sharedPreferences.edit().putInt(context.getString(R.string.setting_camera_cameraid), value).apply()
+            this.sharedPreferences.edit() {
+                putInt(
+                    context.getString(R.string.setting_camera_cameraid),
+                    value
+                )
+            }
         }
 
     var cameraMotionEnabled: Boolean
         get() = getBoolPref(R.string.key_setting_camera_motionenabled, R.string.default_setting_camera_motionenabled)
         set(value) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_setting_camera_motionenabled), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_setting_camera_motionenabled),
+                    value
+                )
+            }
         }
 
     var cameraMotionLeniency: Int
         get() = sharedPreferences.getInt(PREF_CAMERA_MOTION_LATENCY, 20)
         set(value) {
-            sharedPreferences.edit().putInt(PREF_CAMERA_MOTION_LATENCY, value).apply()
+            sharedPreferences.edit() { putInt(PREF_CAMERA_MOTION_LATENCY, value) }
         }
 
     val cameraMotionMinLuma: Int
@@ -135,7 +159,12 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         get() = getBoolPref(R.string.key_setting_camera_faceenabled,
                 R.string.default_setting_camera_faceenabled)
         set(value) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_setting_camera_faceenabled), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_setting_camera_faceenabled),
+                    value
+                )
+            }
         }
 
     val cameraFaceWake: Boolean
@@ -145,7 +174,7 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
     var cameraFaceSize: Int
         get() = sharedPreferences.getInt(PREF_CAMERA_FACE_SIZE, 0)
         set(value) {
-            sharedPreferences.edit().putInt(PREF_CAMERA_FACE_SIZE, value).apply()
+            sharedPreferences.edit() { putInt(PREF_CAMERA_FACE_SIZE, value) }
         }
 
     val cameraFaceRotation: Boolean
@@ -156,7 +185,12 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         get() = getBoolPref(R.string.key_setting_camera_qrcodeenabled,
                 R.string.default_setting_camera_qrcodeenabled)
         set(value) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_setting_camera_qrcodeenabled), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_setting_camera_qrcodeenabled),
+                    value
+                )
+            }
         }
 
     val motionResetTime: Int
@@ -183,7 +217,12 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
                 R.string.default_setting_http_mjpegenabled)
 
     fun setHttpMJPEGEnabled(value: Boolean?) {
-        sharedPreferences.edit().putBoolean(context.getString(R.string.key_setting_http_mjpegenabled), value!!).apply()
+        sharedPreferences.edit() {
+            putBoolean(
+                context.getString(R.string.key_setting_http_mjpegenabled),
+                value!!
+            )
+        }
     }
 
     val httpMJPEGMaxStreams: Int
@@ -195,18 +234,33 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
     var mqttVersion: String
         get() = getStringPref(R.string.key_setting_mqtt_version, R.string.default_setting_mqtt_version)
         set(value) {
-            sharedPreferences.edit().putString(context.getString(R.string.key_setting_mqtt_version), value).apply()
+            sharedPreferences.edit() {
+                putString(
+                    context.getString(R.string.key_setting_mqtt_version),
+                    value
+                )
+            }
         }
 
     var mqttTlsEnabled: Boolean
         get() = sharedPreferences.getBoolean(context.getString(R.string.key_setting_mqtt_tls_enabled), false)
         set(value) =
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_setting_mqtt_tls_enabled), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_setting_mqtt_tls_enabled),
+                    value
+                )
+            }
 
     var mqttBroker: String
         get() = getStringPref(R.string.key_setting_mqtt_servername, R.string.default_setting_mqtt_servername)
         set(value) =
-            sharedPreferences.edit().putString(context.getString(R.string.key_setting_mqtt_servername), value).apply()
+            sharedPreferences.edit() {
+                putString(
+                    context.getString(R.string.key_setting_mqtt_servername),
+                    value
+                )
+            }
 
     val mqttServerPort: Int
         get() = getStringPref(R.string.key_setting_mqtt_serverport, R.string.default_setting_mqtt_serverport).trim().toInt()
@@ -223,13 +277,23 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         get() = getStringPref(R.string.key_setting_mqtt_username,
                 R.string.default_setting_mqtt_username)
         set(value) =
-            sharedPreferences.edit().putString(context.getString(R.string.key_setting_mqtt_username), value).apply()
+            sharedPreferences.edit() {
+                putString(
+                    context.getString(R.string.key_setting_mqtt_username),
+                    value
+                )
+            }
 
     var mqttPassword: String
         get() = getStringPref(R.string.key_setting_mqtt_password,
                 R.string.default_setting_mqtt_password)
         set(value) =
-            sharedPreferences.edit().putString(context.getString(R.string.key_setting_mqtt_password), value).apply()
+            sharedPreferences.edit() {
+                putString(
+                    context.getString(R.string.key_setting_mqtt_password),
+                    value
+                )
+            }
 
     val mqttSensorFrequency: Int
         get() = getStringPref(R.string.key_setting_mqtt_sensorfrequency,
@@ -259,20 +323,30 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         get() = getStringPref(R.string.key_setting_browser_user_agent,
                 R.string.default_browser_user_agent)
         set(value) {
-            sharedPreferences.edit().putString(context.getString(R.string.key_setting_browser_user_agent), value).apply()
+            sharedPreferences.edit() {
+                putString(
+                    context.getString(R.string.key_setting_browser_user_agent),
+                    value
+                )
+            }
             settingsUpdated()
         }
 
     var browserRefreshDisconnect: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_BROWSER_REFRESH_DISCONNECT, true)
         set(value) {
-            sharedPreferences.edit().putBoolean(PREF_BROWSER_REFRESH_DISCONNECT, value).apply()
+            sharedPreferences.edit() { putBoolean(PREF_BROWSER_REFRESH_DISCONNECT, value) }
         }
 
     var browserRefresh: Boolean
         get() = this.sharedPreferences.getBoolean(context.getString(R.string.key_pref_browser_refresh), true)
         set(value) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_pref_browser_refresh), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_pref_browser_refresh),
+                    value
+                )
+            }
         }
 
     val cameraFPS: Float
@@ -291,68 +365,108 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
     var inactivityTime: Long
         get() = sharedPreferences.getLong(context.getString(R.string.key_screensaver_inactivity_time), 30000)
         set(value) {
-            sharedPreferences.edit().putLong(context.getString(R.string.key_screensaver_inactivity_time), value).apply()
+            sharedPreferences.edit() {
+                putLong(
+                    context.getString(R.string.key_screensaver_inactivity_time),
+                    value
+                )
+            }
         }
 
     var screenSaverDimValue: Int
         get() = sharedPreferences.getInt(context.getString(R.string.key_screensaver_dim_value), 25)
         set(value) {
-            sharedPreferences.edit().putInt(context.getString(R.string.key_screensaver_dim_value), value).apply()
+            sharedPreferences.edit() {
+                putInt(
+                    context.getString(R.string.key_screensaver_dim_value),
+                    value
+                )
+            }
         }
 
     var settingsLocation: Int
         get() = sharedPreferences.getInt(PREF_SETTINGS_LOCATION, 0)
         set(value) {
-            sharedPreferences.edit().putInt(PREF_SETTINGS_LOCATION, value).apply()
+            sharedPreferences.edit() { putInt(PREF_SETTINGS_LOCATION, value) }
         }
 
     var imageRotation: Int
         get() = sharedPreferences.getInt(PREF_IMAGE_ROTATION, ROTATE_TIME_IN_MINUTES)
-        set(value) = this.sharedPreferences.edit().putInt(PREF_IMAGE_ROTATION, value).apply()
+        set(value) = this.sharedPreferences.edit() { putInt(PREF_IMAGE_ROTATION, value) }
 
     var hasBlankScreenSaver: Boolean
         get() = getBoolPref(R.string.key_screensaver_blank, R.string.default_screensaver_blank)
         set(value) =
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_screensaver_blank), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_screensaver_blank),
+                    value
+                )
+            }
 
     var hasDimScreenSaver: Boolean
         get() = getBoolPref(R.string.key_screensaver_dim, R.string.default_screensaver_dim)
         set(value) =
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_screensaver_dim), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_screensaver_dim),
+                    value
+                )
+            }
 
     var hasClockScreenSaver: Boolean
         get() = getBoolPref(R.string.key_screensaver, R.string.default_screensaver)
         set(value) =
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_screensaver), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_screensaver),
+                    value
+                )
+            }
 
     var hasScreenSaverWallpaper: Boolean
         get() = getBoolPref(R.string.key_screensaver_wallpaper, R.string.default_screensaver_wallpaper)
         set(value) =
-            sharedPreferences.edit().putBoolean(context.getString(R.string.key_screensaver_wallpaper), value).apply()
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_screensaver_wallpaper),
+                    value
+                )
+            }
 
     var webScreenSaver: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_WEB_SCREENSAVER, false)
-        set(value) = this.sharedPreferences.edit().putBoolean(PREF_WEB_SCREENSAVER, value).apply()
+        set(value) = this.sharedPreferences.edit() { putBoolean(PREF_WEB_SCREENSAVER, value) }
 
     var webScreenSaverUrl: String
         get() = sharedPreferences.getString(PREF_WEB_SCREENSAVER_URL, WEB_SCREEN_SAVER).orEmpty()
-        set(value) = this.sharedPreferences.edit().putString(PREF_WEB_SCREENSAVER_URL, value).apply()
+        set(value) = this.sharedPreferences.edit() { putString(PREF_WEB_SCREENSAVER_URL, value) }
 
     var screenBrightness: Int
         get() = sharedPreferences.getInt(context.getString(R.string.key_setting_screen_brightness), 150)
         set(value) {
-            sharedPreferences.edit().putInt(context.getString(R.string.key_setting_screen_brightness), value).apply()
+            sharedPreferences.edit() {
+                putInt(
+                    context.getString(R.string.key_setting_screen_brightness),
+                    value
+                )
+            }
         }
 
     var screenScreenSaverBrightness: Int
         get() = sharedPreferences.getInt(context.getString(R.string.key_setting_screensaver_brightness), (255*.25).toInt())
         set(value) {
-            sharedPreferences.edit().putInt(context.getString(R.string.key_setting_screensaver_brightness), value).apply()
+            sharedPreferences.edit() {
+                putInt(
+                    context.getString(R.string.key_setting_screensaver_brightness),
+                    value
+                )
+            }
         }
 
     var useScreenBrightness: Boolean
         get() = this.sharedPreferences.getBoolean(PREF_SCREEN_BRIGHTNESS, false)
-        set(value) = this.sharedPreferences.edit().putBoolean(PREF_SCREEN_BRIGHTNESS, value).apply()
+        set(value) = this.sharedPreferences.edit() { putBoolean(PREF_SCREEN_BRIGHTNESS, value) }
 
     val ignoreSSLErrors: Boolean
         get() = getBoolPref(R.string.key_setting_ignore_ssl_errors,
@@ -377,12 +491,12 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
 
     fun hasSettingsUpdates(): Boolean {
         val updates = sharedPreferences.getBoolean(PREF_BROWSER_SETTINGS_UPDATED, false)
-        sharedPreferences.edit().putBoolean(PREF_BROWSER_SETTINGS_UPDATED, false).apply()
+        sharedPreferences.edit() { putBoolean(PREF_BROWSER_SETTINGS_UPDATED, false) }
         return updates
     }
 
     private fun settingsUpdated() {
-        sharedPreferences.edit().putBoolean(PREF_BROWSER_SETTINGS_UPDATED, true).apply()
+        sharedPreferences.edit() { putBoolean(PREF_BROWSER_SETTINGS_UPDATED, true) }
     }
 
     companion object {
