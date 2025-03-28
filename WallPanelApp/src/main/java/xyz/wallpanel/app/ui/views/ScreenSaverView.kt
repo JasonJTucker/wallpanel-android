@@ -124,6 +124,9 @@ class ScreenSaverView : RelativeLayout {
             timeHandler?.postDelayed(timeRunnable, 10)
             binding.screenSaverClockLayout.visibility = VISIBLE
             if (weatherInfo.current_temperature != "") {
+                binding.screenSaverSpacer.visibility = VISIBLE
+                binding.screenSaverWeather.visibility = VISIBLE
+                binding.screenSaverMoreWeather.visibility = VISIBLE
                 binding.screenSaverSpacer.text = " "
                 (weatherInfo.current_temperature + "°C, " + weatherInfo.current_conditions + ", wind " + weatherInfo.wind_direction + " " + weatherInfo.wind_speed + " km/h").also {
                     binding.screenSaverWeather.text = it
@@ -133,9 +136,9 @@ class ScreenSaverView : RelativeLayout {
                     binding.screenSaverMoreWeather.text = it
                 }
             } else {
-                binding.screenSaverSpacer.text = ""
-                binding.screenSaverWeather.text = ""
-                binding.screenSaverMoreWeather.text = ""
+                binding.screenSaverSpacer.visibility = GONE
+                binding.screenSaverWeather.visibility = GONE
+                binding.screenSaverMoreWeather.visibility = GONE
             }
         } else {
             binding.screenSaverClockLayout.visibility = GONE

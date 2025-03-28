@@ -82,7 +82,8 @@
             android:layout_gravity="center"
             android:gravity="start"
             android:textSize="16sp"
-            tools:text="" />
+            tools:text=""
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/screenSaverWeather"
@@ -92,7 +93,8 @@
             android:layout_gravity="center"
             android:gravity="start"
             android:textSize="16sp"
-            tools:text="" />
+            tools:text=""
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/screenSaverMoreWeather"
@@ -102,7 +104,8 @@
             android:layout_gravity="center"
             android:gravity="start"
             android:textSize="16sp"
-            tools:text="" />
+            tools:text=""
+            tools:visibility="gone" />
 
     </LinearLayout>
 

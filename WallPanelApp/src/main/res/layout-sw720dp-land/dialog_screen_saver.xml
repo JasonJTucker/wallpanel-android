@@ -82,6 +82,7 @@
             android:layout_gravity="center"
             android:gravity="start"
             android:textSize="34sp"
+            android:visibility="gone"
             tools:text="" />
 
         <TextView
@@ -92,6 +93,7 @@
             android:layout_gravity="center"
             android:gravity="start"
             android:textSize="34sp"
+            android:visibility="gone"
             tools:text="" />
 
         <TextView
@@ -102,6 +104,7 @@
             android:layout_gravity="center"
             android:gravity="start"
             android:textSize="28sp"
+            android:visibility="gone"
             tools:text="" />
 
     </LinearLayout>
