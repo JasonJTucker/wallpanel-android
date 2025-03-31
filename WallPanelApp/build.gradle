@@ -59,6 +59,7 @@ def BROKER_USERNAME() {
 
 android {
     kapt {
+        generateStubs = true
         correctErrorTypes = true
     }
     compileSdk 33

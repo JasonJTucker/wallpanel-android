@@ -358,6 +358,9 @@ class BrowserActivityNative : BaseBrowserActivity(), LifecycleObserver, WebClien
     private fun initWebPageLoad() {
         binding.progressView.visibility = View.GONE
         webView.visibility = View.VISIBLE
+        // enable/disable the Android keyboard in the WebView
+        webView.setFocusable(!configuration.disableKeyboardInWebView)
+        webView.setFocusableInTouchMode(!configuration.disableKeyboardInWebView)
         // set user agent
         configureWebSettings(configuration.browserUserAgent)
         // set zoom level

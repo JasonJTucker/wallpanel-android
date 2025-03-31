@@ -34,7 +34,8 @@
     <string name="key_settings_sensors_pressure">setting_sensors_pressure</string>
     <string name="key_settings_sensors_humidity">setting_sensors_humidity</string>
     <string name="key_setting_sensors_enabled">setting_sensors_enabled</string>
-    <string name="key_hadware_accelerated_enabled">hadware_accelerated_enabled</string>
+    <string name="key_disable_keyboard_in_webview">setting_disable_keyboard_in_webview</string>
+    <string name="key_hardware_accelerated_enabled">hardware_accelerated_enabled</string>
     <string name="default_setting_sensors_value">false</string>
     <string name="default_hardware_accelerated_value">true</string>
     <string name="key_setting_mqtt_basetopic">setting_mqtt_basetopic</string>
@@ -159,6 +160,9 @@
 
     <string name="key_setting_camera_facerotation">setting_camera_facerotation</string>
     <string name="default_setting_camera_facerotation">false</string>
+
+    <string name="key_setting_disable_keyboard_in_webview">setting_disable_keyboard_in_webview</string>
+    <string name="default_setting_disable_keyboard_in_webview">false</string>
 
     <string-array name="settings_titles">
         <item>@string/title_settings</item>

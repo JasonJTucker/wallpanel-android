@@ -72,8 +72,14 @@
             android:title="@string/title_setting_test_zoomlevel"/>
 
         <SwitchPreference
+            android:defaultValue="@string/default_setting_disable_keyboard_in_webview"
+            android:key="@string/key_disable_keyboard_in_webview"
+            android:title="@string/title_disable_keyboard_in_webview"
+            android:summary="@string/summary_disable_keyboard_in_webview"/>
+
+        <SwitchPreference
             android:defaultValue="@string/default_hardware_accelerated_value"
-            android:key="@string/key_hadware_accelerated_enabled"
+            android:key="@string/key_hardware_accelerated_enabled"
             android:title="@string/title_hardware_acceleration"
             android:summary="@string/summary_hardware_acceleration"/>
 

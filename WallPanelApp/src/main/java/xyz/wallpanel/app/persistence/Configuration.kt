@@ -193,6 +193,18 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
             }
         }
 
+    var disableKeyboardInWebView: Boolean
+        get() = getBoolPref(R.string.key_setting_disable_keyboard_in_webview,
+                R.string.default_setting_disable_keyboard_in_webview)
+        set(value) {
+            sharedPreferences.edit() {
+                putBoolean(
+                    context.getString(R.string.key_setting_disable_keyboard_in_webview),
+                    value
+                )
+            }
+        }
+
     val motionResetTime: Int
         get() = getStringPref(R.string.key_setting_motion_clear,
                 R.string.default_motion_clear).trim().toInt()
@@ -316,7 +328,7 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
                 R.string.default_setting_sensors_value)
 
     val hardwareAccelerated: Boolean
-        get() = getBoolPref(R.string.key_hadware_accelerated_enabled,
+        get() = getBoolPref(R.string.key_hardware_accelerated_enabled,
                 R.string.default_hardware_accelerated_value)
 
     var browserUserAgent: String
