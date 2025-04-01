@@ -62,8 +62,7 @@ import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_BRIGHTNESS
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CAMERA
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CLEAR_CACHE
 // additions for receiving weather via MQTT
-import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_CONDITIONS
-import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_TEMPERATURE
+import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CURRENT_WEATHER
 //
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_EVAL
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_RELAUNCH
@@ -668,7 +667,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                 setVolume((commandJson.getInt(COMMAND_VOLUME).toFloat() / 100))
             }
             // additions for receiving weather information via MQTT
-            if (commandJson.has(COMMAND_CURRENT_TEMPERATURE)) {
+            if (commandJson.has(COMMAND_CURRENT_WEATHER)) {
                 // must be a better way to do this
                 Timber.d("CommandJSON for weather:")
                 Timber.d(commandJson.toString())

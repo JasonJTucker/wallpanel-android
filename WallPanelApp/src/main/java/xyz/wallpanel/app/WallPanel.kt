@@ -26,12 +26,30 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
 import xyz.wallpanel.app.di.DaggerApplicationComponent
+import xyz.wallpanel.app.modules.WeatherInfo
 import xyz.wallpanel.app.utils.LauncherShortcuts
 import xyz.wallpanel.app.utils.WallpanelDebugTree
 
 
 class WallPanel : DaggerApplication() {
 
+    private var globalWeatherInfo: WeatherInfo = WeatherInfo()
+
+    fun getWeatherInfo(): WeatherInfo {
+        return globalWeatherInfo
+    }
+
+    fun setWeatherInfo(newWeatherInfo: WeatherInfo) {
+        globalWeatherInfo = newWeatherInfo
+    }
+
+    companion object {
+        private lateinit var applicationInstance: WallPanel
+        @JvmStatic
+        fun getAppInstance(): WallPanel {
+            return applicationInstance
+        }
+    }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         return DaggerApplicationComponent.builder().create(this)
@@ -39,6 +57,7 @@ class WallPanel : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        applicationInstance = this
         if (BuildConfig.DEBUG) {
             // Gives clickable links to the issue in the Android Studio Logcat
             Timber.plant(WallpanelDebugTree())

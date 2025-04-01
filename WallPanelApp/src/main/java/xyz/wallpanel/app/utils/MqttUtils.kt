@@ -49,8 +49,7 @@ class MqttUtils {
         const val COMMAND_SPEAK = "speak"
         const val COMMAND_VOLUME = "volume"
         // additions for receiving weather via MQTT
-        const val COMMAND_CURRENT_CONDITIONS = "current_conditions"
-        const val COMMAND_CURRENT_TEMPERATURE = "current_temperature"
+        const val COMMAND_CURRENT_WEATHER = "current_temperature"
 
         private val topicsList = ArrayList<String>()
 

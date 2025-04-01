@@ -36,6 +36,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 import xyz.wallpanel.app.AppExceptionHandler
+import xyz.wallpanel.app.WallPanel
 import xyz.wallpanel.app.modules.WeatherInfo
 import xyz.wallpanel.app.network.MQTTOptions
 import xyz.wallpanel.app.network.WallPanelService
@@ -57,6 +58,9 @@ import javax.inject.Inject
 abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
 
     @Inject
+    lateinit var wallPanel: WallPanel
+
+    @Inject
     lateinit var dialogUtils: DialogUtils
 
     @Inject
@@ -76,15 +80,7 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
     private var hasWakeScreen = false
     var displayProgress = true
     var zoomLevel = 1.0f
-    var weatherInfo: WeatherInfo = WeatherInfo(
-        current_temperature = "",
-        current_conditions = "",
-        high_temperature = "",
-        low_temperature = "",
-        wind_direction = "",
-        wind_speed = "",
-        chance_of_precip = ""
-    )
+    var weatherInfo = WallPanel.getAppInstance().getWeatherInfo()
 
     // handler for received data from service for screen operations
     private val mWakeBroadcastReceiver = object : BroadcastReceiver() {
@@ -151,6 +147,7 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
                 Timber.d("Broadcast weather temp update")
                 val jsonString = intent.getStringExtra(BROADCAST_ACTION_WEATHER_UPDATE).toString()
                 weatherInfo = Json.decodeFromString<WeatherInfo>(jsonString)
+                WallPanel.getAppInstance().setWeatherInfo(weatherInfo)
             }
         }
     }
@@ -370,8 +367,7 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
                 configuration.hasScreenSaverWallpaper,
                 configuration.hasClockScreenSaver,
                 configuration.imageRotation.toLong(),
-                configuration.appPreventSleep,
-                weatherInfo
+                configuration.appPreventSleep
             )
             resetScreenBrightness(true)
         }

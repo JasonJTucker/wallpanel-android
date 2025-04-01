@@ -41,8 +41,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import timber.log.Timber
 import xyz.wallpanel.app.R
+import xyz.wallpanel.app.WallPanel
 import xyz.wallpanel.app.databinding.DialogScreenSaverBinding
-import xyz.wallpanel.app.modules.WeatherInfo
 import xyz.wallpanel.app.persistence.Configuration.Companion.WEB_SCREEN_SAVER
 import java.util.Calendar
 import java.util.Date
@@ -72,8 +72,25 @@ class ScreenSaverView : RelativeLayout {
             val currentTimeString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_TIME)
             val currentDayString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE)
 
+            val weatherInfo = WallPanel.getAppInstance().getWeatherInfo()
+            var weatherVis = GONE
+
             binding.screenSaverClock.text = currentTimeString
             binding.screenSaverDay.text = currentDayString
+            if (weatherInfo.current_temperature != "") {
+                binding.screenSaverSpacer.text = " "
+                (weatherInfo.current_temperature + "°C, " + weatherInfo.current_conditions + ", wind " + weatherInfo.wind_direction + " " + weatherInfo.wind_speed + " km/h").also {
+                    binding.screenSaverWeather.text = it
+                }
+                ("Hi: " + weatherInfo.high_temperature + "°C, Lo: " + weatherInfo.low_temperature + "°C").also {
+                    binding.screenSaverMoreWeather.text = it
+                }
+                weatherVis = VISIBLE
+            }
+
+            binding.screenSaverSpacer.visibility = weatherVis
+            binding.screenSaverWeather.visibility = weatherVis
+            binding.screenSaverMoreWeather.visibility = weatherVis
 
             parentWidth = binding.screenSaverView.width
             parentHeight = binding.screenSaverView.height
@@ -109,7 +126,7 @@ class ScreenSaverView : RelativeLayout {
         wallPaperHandler?.removeCallbacks(wallPaperRunnable)
     }
 
-    fun init(hasWeb: Boolean, urlWeb: String, hasWallpaper: Boolean, hasClock: Boolean, rotationDelay: Long, weatherInfo: WeatherInfo) {
+    fun init(hasWeb: Boolean, urlWeb: String, hasWallpaper: Boolean, hasClock: Boolean, rotationDelay: Long) {
         rotationInterval = rotationDelay
         showWebPage = hasWeb
         webUrl = urlWeb
@@ -123,23 +140,6 @@ class ScreenSaverView : RelativeLayout {
             timeHandler = Handler(Looper.getMainLooper())
             timeHandler?.postDelayed(timeRunnable, 10)
             binding.screenSaverClockLayout.visibility = VISIBLE
-            if (weatherInfo.current_temperature != "") {
-                binding.screenSaverSpacer.visibility = VISIBLE
-                binding.screenSaverWeather.visibility = VISIBLE
-                binding.screenSaverMoreWeather.visibility = VISIBLE
-                binding.screenSaverSpacer.text = " "
-                (weatherInfo.current_temperature + "°C, " + weatherInfo.current_conditions + ", wind " + weatherInfo.wind_direction + " " + weatherInfo.wind_speed + " km/h").also {
-                    binding.screenSaverWeather.text = it
-                }
-                //("Hi: " + weatherStuff.high_temperature + "°C, Lo: " + weatherStuff.low_temperature + "°C, POP: " + weatherStuff.chance_of_precip + "%").also {
-                ("Hi: " + weatherInfo.high_temperature + "°C, Lo: " + weatherInfo.low_temperature + "°C").also {
-                    binding.screenSaverMoreWeather.text = it
-                }
-            } else {
-                binding.screenSaverSpacer.visibility = GONE
-                binding.screenSaverWeather.visibility = GONE
-                binding.screenSaverMoreWeather.visibility = GONE
-            }
         } else {
             binding.screenSaverClockLayout.visibility = GONE
         }
