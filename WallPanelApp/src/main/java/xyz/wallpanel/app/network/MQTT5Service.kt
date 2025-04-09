@@ -2,7 +2,9 @@ package xyz.wallpanel.app.network
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.text.TextUtils
+import androidx.annotation.RequiresApi
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import com.hivemq.client.mqtt.datatypes.MqttQos
@@ -11,11 +13,8 @@ import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
-import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException
-import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
-import com.hivemq.client.util.TypeSwitch
 import xyz.wallpanel.app.R
 import xyz.wallpanel.app.ext.convertArrayToString
 import timber.log.Timber
@@ -24,7 +23,6 @@ import java.security.GeneralSecurityException
 import java.security.NoSuchAlgorithmException
 import java.security.spec.InvalidKeySpecException
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.function.Consumer
 
 class MQTT5Service(
     private var context: Context, options: MQTTOptions,
@@ -143,11 +141,24 @@ class MQTT5Service(
                 val mqttBuilder = MqttClient.builder().identifier(mqttOptions.getClientId())
                     .serverHost(mqttOptions.getBroker()).serverPort(mqttOptions.getPort())
                 mqttBuilder.addConnectedListener { context: MqttClientConnectedContext? ->
-                    Timber.d("connect to broker completed")
+                    Timber.d("connect to broker for commands completed")
                     subscribeToTopics(mqttOptions.getStateTopics())
 
                     val onlineMessage =
                         Mqtt5Publish.builder().topic("${mqttOptions.getBaseTopic()}${CONNECTION}")
+                            .payload(ONLINE.toByteArray()).retain(true).build()
+                    sendMessage(onlineMessage)
+
+                    // TODO: There needs to be a way to handle queues...
+                    mReady.set(true)
+                    listener?.handleMqttConnected()
+                }
+                mqttBuilder.addConnectedListener { context: MqttClientConnectedContext? ->
+                    Timber.d("connect to broker for weather completed")
+                    subscribeToTopics(mqttOptions.getWeatherTopics())
+
+                    val onlineMessage =
+                        Mqtt5Publish.builder().topic("${mqttOptions.getWeatherTopic()}${CONNECTION}")
                             .payload(ONLINE.toByteArray()).retain(true).build()
                     sendMessage(onlineMessage)
 
@@ -220,6 +231,7 @@ class MQTT5Service(
     }
 
     //@TargetApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun subscribeToTopics(topicFilters: Array<String>?) {
         topicFilters?.let {
             Timber.d("Subscribe to Topics: %s", topicFilters.convertArrayToString())

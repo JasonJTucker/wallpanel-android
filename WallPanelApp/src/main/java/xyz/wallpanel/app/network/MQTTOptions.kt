@@ -17,8 +17,10 @@
 package xyz.wallpanel.app.network
 
 import android.text.TextUtils
+import timber.log.Timber
 import xyz.wallpanel.app.persistence.Configuration
 import xyz.wallpanel.app.utils.MqttUtils.Companion.TOPIC_COMMAND
+import xyz.wallpanel.app.utils.MqttUtils.Companion.WEATHER
 
 import java.util.*
 import javax.inject.Inject
@@ -74,6 +76,22 @@ constructor(private val configuration: Configuration) {
     fun getStateTopics(): Array<String> {
         val topics = ArrayList<String>()
         topics.add(getStateTopic())
+        Timber.d("%s%s", "Commands: Added ", topics.toString())
+        return topics.toArray(arrayOf<String>())
+    }
+
+    fun getWeatherBaseTopic(): String {
+        return configuration.mqttWeatherTopic
+    }
+
+    fun getWeatherTopic(): String {
+        return getWeatherBaseTopic() + WEATHER
+    }
+
+    fun getWeatherTopics(): Array<String> {
+        val topics = ArrayList<String>()
+        topics.add(getWeatherTopic())
+        Timber.d("%s%s", "Weather: Added ", topics.toString())
         return topics.toArray(arrayOf<String>())
     }
 

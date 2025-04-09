@@ -281,6 +281,10 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
         get() = getStringPref(R.string.key_setting_mqtt_basetopic,
                 R.string.default_setting_mqtt_basetopic)
 
+    val mqttWeatherTopic: String
+        get() = getStringPref(R.string.key_setting_mqtt_weathertopic,
+            R.string.default_setting_mqtt_weathertopic)
+
     val mqttClientId: String
         get() = getStringPref(R.string.key_setting_mqtt_clientid,
                 R.string.default_setting_mqtt_clientid)

@@ -26,6 +26,7 @@ class MqttUtils {
 
         const val TOPIC_COMMAND = "command"
         const val COMMAND_STATE = "state"
+        const val WEATHER = "current_conditions"
         const val VALUE = "value"
         const val COMMAND_SENSOR_FACE = "sensor/face"
         const val COMMAND_SENSOR_QR_CODE = "sensor/qrcode"
