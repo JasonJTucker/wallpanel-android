@@ -72,8 +72,13 @@ class ScreenSaverView : RelativeLayout {
             val currentTimeString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_TIME)
             val currentDayString = DateUtils.formatDateTime(context, date.time, DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE)
 
-            val weatherInfo = WallPanel.getAppInstance().getWeatherInfo()
+            val appInstance = WallPanel.getAppInstance()
+
+            val weatherInfo = appInstance.getWeatherInfo()
+            val alarmStatus = appInstance.getAlarmStatus()
+
             var weatherVis = GONE
+            var alarmVis = INVISIBLE
 
             binding.screenSaverClock.text = currentTimeString
             binding.screenSaverDay.text = currentDayString
@@ -88,9 +93,15 @@ class ScreenSaverView : RelativeLayout {
                 weatherVis = VISIBLE
             }
 
+            if (alarmStatus != "disarmed") {
+                alarmVis = VISIBLE
+            }
+
             binding.screenSaverSpacer.visibility = weatherVis
             binding.screenSaverWeather.visibility = weatherVis
             binding.screenSaverMoreWeather.visibility = weatherVis
+
+            binding.screenSaverAlarmStatus.visibility = alarmVis
 
             parentWidth = binding.screenSaverView.width
             parentHeight = binding.screenSaverView.height

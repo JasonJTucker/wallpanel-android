@@ -162,7 +162,18 @@ class MQTT5Service(
                             .payload(ONLINE.toByteArray()).retain(true).build()
                     sendMessage(onlineMessage)
 
-                    // TODO: There needs to be a way to handle queues...
+                    mReady.set(true)
+                    listener?.handleMqttConnected()
+                }
+                mqttBuilder.addConnectedListener { context: MqttClientConnectedContext? ->
+                    Timber.d("connect to broker for alarm completed")
+                    subscribeToTopics(mqttOptions.getAlarmTopics())
+
+                    val onlineMessage =
+                        Mqtt5Publish.builder().topic("${mqttOptions.getAlarmTopic()}${CONNECTION}")
+                            .payload(ONLINE.toByteArray()).retain(true).build()
+                    sendMessage(onlineMessage)
+
                     mReady.set(true)
                     listener?.handleMqttConnected()
                 }

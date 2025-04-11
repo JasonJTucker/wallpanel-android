@@ -21,6 +21,7 @@ import timber.log.Timber
 import xyz.wallpanel.app.persistence.Configuration
 import xyz.wallpanel.app.utils.MqttUtils.Companion.TOPIC_COMMAND
 import xyz.wallpanel.app.utils.MqttUtils.Companion.WEATHER
+import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_STATUS
 
 import java.util.*
 import javax.inject.Inject
@@ -92,6 +93,21 @@ constructor(private val configuration: Configuration) {
         val topics = ArrayList<String>()
         topics.add(getWeatherTopic())
         Timber.d("%s%s", "Weather: Added ", topics.toString())
+        return topics.toArray(arrayOf<String>())
+    }
+
+    fun getAlarmBaseTopic(): String {
+        return configuration.mqttAlarmTopic
+    }
+
+    fun getAlarmTopic(): String {
+        return getAlarmBaseTopic() + ALARM_STATUS
+    }
+
+    fun getAlarmTopics(): Array<String> {
+        val topics = ArrayList<String>()
+        topics.add(getAlarmTopic())
+        Timber.d("%s%s", "Alarm: Added ", topics.toString())
         return topics.toArray(arrayOf<String>())
     }
 

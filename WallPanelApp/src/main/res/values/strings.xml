@@ -304,6 +304,7 @@
     <string name="pref_web_saver_description">Use a web page as a screensaver.</string>
     <string name="pref_web_screen_url_title">Web Screensaver Url</string>
     <string name="pref_web_screen_url_description">Enter the url to use as a web screensaver.</string>
+    <string name="alarmo_armed_indicator">Alarmo_Armed_Screensaver_BG</string>
 
 
     <string-array name="flip_directions">

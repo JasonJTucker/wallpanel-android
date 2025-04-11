@@ -43,6 +43,16 @@ class WallPanel : DaggerApplication() {
         globalWeatherInfo = newWeatherInfo
     }
 
+    private var globalAlarmStatus: String = "disarmed"
+
+    fun getAlarmStatus(): String {
+        return globalAlarmStatus
+    }
+
+    fun setAlarmStatus(newAlarmStatus: String) {
+        globalAlarmStatus = newAlarmStatus
+    }
+
     companion object {
         private lateinit var applicationInstance: WallPanel
         @JvmStatic

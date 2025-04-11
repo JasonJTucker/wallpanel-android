@@ -41,6 +41,7 @@
     <string name="key_setting_mqtt_basetopic">setting_mqtt_basetopic</string>
     <string name="key_setting_mqtt_serverport">setting_mqtt_serverport</string>
     <string name="key_setting_mqtt_weathertopic">setting_mqtt_weathertopic</string>
+    <string name="key_setting_mqtt_alarmtopic">setting_mqtt_alarmtopic</string>
     <string name="default_setting_mqtt_serverport">1883</string>
     <string name="key_setting_mqtt_servername">setting_mqtt_servername</string>
     <string name="default_setting_mqtt_servername">192.168.1.1</string>
@@ -59,6 +60,7 @@
     <string name="default_setting_mqtt_tts_enabled">false</string>
     <string name="default_setting_mqtt_basetopic">wallpanel/mywallpanel/</string>
     <string name="default_setting_mqtt_weathertopic">weather/</string>
+    <string name="default_setting_mqtt_alarmtopic">alarmo/</string>
     <string name="key_setting_mqtt_clientid">setting_mqtt_clientid</string>
     <string name="default_setting_mqtt_clientid">mywallpanel</string>
     <string name="default_setting_http_mjpegmaxstreams">1</string>

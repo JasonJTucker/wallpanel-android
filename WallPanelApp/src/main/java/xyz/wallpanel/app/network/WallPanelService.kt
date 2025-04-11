@@ -42,12 +42,11 @@ import com.koushikdutta.async.http.server.AsyncHttpServer
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse
 import com.koushikdutta.async.util.Charsets
 import dagger.android.AndroidInjection
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import xyz.wallpanel.app.R
+import xyz.wallpanel.app.WallPanel
 import xyz.wallpanel.app.modules.*
 import xyz.wallpanel.app.persistence.Configuration
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_CLEAR_BROWSER_CACHE
@@ -55,8 +54,8 @@ import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_A
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_LOAD_URL
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_OPEN_SETTINGS
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_RELOAD_PAGE
-import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_WEATHER_UPDATE
 import xyz.wallpanel.app.utils.MqttUtils
+import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_STATUS
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_AUDIO
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_BRIGHTNESS
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CAMERA
@@ -506,7 +505,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         Timber.d("startMJPEG")
         cameraReader?.let {
             it.getJpeg().observe(this, Observer { jpeg ->
-                if (mJpegSockets.size > 0 && jpeg != null) {
+                if (mJpegSockets.isNotEmpty() && jpeg != null) {
                     var i = 0
                     while (i < mJpegSockets.size) {
                         val s = mJpegSockets[i]
@@ -605,7 +604,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
     }
 
     private fun processCommand(commandJson: JSONObject): Boolean {
-        Timber.d("processCommand $commandJson")
+        Timber.d("Attempting to processCommand $commandJson")
         try {
             if (commandJson.has(COMMAND_CAMERA)) {
                 val enableCamera = commandJson.getBoolean(COMMAND_CAMERA)
@@ -669,8 +668,6 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             // additions for receiving weather information via MQTT
             if (commandJson.has(COMMAND_CURRENT_WEATHER)) {
                 // must be a better way to do this
-                Timber.d("CommandJSON for weather:")
-                Timber.d(commandJson.toString())
                 val newWeather = WeatherInfo(
                     current_temperature = commandJson.getString("current_temperature"),
                     current_conditions = commandJson.getString("current_conditions"),
@@ -681,6 +678,12 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                     chance_of_precip = commandJson.getString("chance_of_precip")
                 )
                 updateWeather(newWeather)
+            }
+            // additions for receiving alarm information via MQTT
+            if (commandJson.has(ALARM_STATUS)) {
+                Timber.d("CommandJSON for alarm state:")
+                Timber.d(commandJson.toString())
+                updateAlarmStatus(commandJson.getString("alarm_status"))
             }
         } catch (ex: JSONException) {
             Timber.e("Invalid JSON passed as a command: ${commandJson.toString()}")
@@ -709,12 +712,13 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
     }
 
     private fun updateWeather(data: WeatherInfo) {
-        Timber.d("Broadcasting weather update")
-        val intent = Intent(BROADCAST_ACTION_WEATHER_UPDATE)
-        val jsonData = Json.encodeToString(data)
-        intent.putExtra(BROADCAST_ACTION_WEATHER_UPDATE, jsonData)
-        val bm = LocalBroadcastManager.getInstance(applicationContext)
-        bm.sendBroadcast(intent)
+        Timber.d("Updating weather")
+        WallPanel.getAppInstance().setWeatherInfo(data)
+    }
+
+    private fun updateAlarmStatus(alarmStatus: String) {
+        Timber.d("Updating alarm status")
+        WallPanel.getAppInstance().setAlarmStatus(alarmStatus)
     }
 
     private fun playAudio(audioUrl: String) {
@@ -898,7 +902,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
     private fun getBinarySensorDiscoveryDef(displayName: String, stateTopic: String, fieldName: String, deviceClass: String, sensorId: String): JSONObject {
         val discoveryDef = JSONObject()
         if (configuration.mqttLegacyDiscoveryEntities) {
-            discoveryDef.put("name", "${configuration.mqttDiscoveryDeviceName} ${displayName}")
+            discoveryDef.put("name", "${configuration.mqttDiscoveryDeviceName} $displayName")
         } else {
             discoveryDef.put("name", displayName)
         }

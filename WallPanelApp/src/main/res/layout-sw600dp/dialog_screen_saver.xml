@@ -31,6 +31,16 @@
         android:layout_gravity="center"
         tools:ignore="HardcodedText"/>
 
+    <ImageView
+        android:id="@+id/screenSaverAlarmStatus"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@android:color/holo_red_dark"
+        android:contentDescription="@string/alarmo_armed_indicator"
+        android:visibility="invisible"
+        tools:ignore="HardcodedText" />
+        
     <RelativeLayout
         android:id="@+id/screenSaverWebViewLayout"
         android:layout_width="match_parent"

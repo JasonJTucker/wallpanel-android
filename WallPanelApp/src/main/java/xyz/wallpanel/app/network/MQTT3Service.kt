@@ -181,6 +181,18 @@ class MQTT3Service(
                     mReady.set(true)
                     listener?.handleMqttConnected()
                 }
+                mqttBuilder.addConnectedListener { context: MqttClientConnectedContext? ->
+                    Timber.d("connect to broker for alarm completed")
+                    subscribeToTopics(mqttOptions.getAlarmTopics())
+
+                    val onlineMessage =
+                        Mqtt3Publish.builder().topic("${mqttOptions.getAlarmTopic()}${CONNECTION}")
+                            .payload(ONLINE.toByteArray()).retain(true).build()
+                    sendMessage(onlineMessage)
+
+                    mReady.set(true)
+                    listener?.handleMqttConnected()
+                }
                 mqttBuilder.addDisconnectedListener { context: MqttClientDisconnectedContext? ->
                     mReady.set(false)
                     listener?.handleMqttDisconnected()
