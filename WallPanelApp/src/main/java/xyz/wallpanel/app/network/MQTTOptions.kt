@@ -19,9 +19,10 @@ package xyz.wallpanel.app.network
 import android.text.TextUtils
 import timber.log.Timber
 import xyz.wallpanel.app.persistence.Configuration
+import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_BASE
+import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_STATE
 import xyz.wallpanel.app.utils.MqttUtils.Companion.TOPIC_COMMAND
 import xyz.wallpanel.app.utils.MqttUtils.Companion.WEATHER
-import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_STATUS
 
 import java.util.*
 import javax.inject.Inject
@@ -97,11 +98,11 @@ constructor(private val configuration: Configuration) {
     }
 
     fun getAlarmBaseTopic(): String {
-        return configuration.mqttAlarmTopic
+        return ALARM_BASE
     }
 
     fun getAlarmTopic(): String {
-        return getAlarmBaseTopic() + ALARM_STATUS
+        return getAlarmBaseTopic() + ALARM_STATE
     }
 
     fun getAlarmTopics(): Array<String> {

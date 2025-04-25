@@ -52,7 +52,8 @@ class MqttUtils {
         // addition for receiving weather via MQTT
         const val COMMAND_CURRENT_WEATHER = "current_temperature"
         // addition for receiving alarm via MQTT
-        const val ALARM_STATUS = "alarm_status"
+        const val ALARM_BASE = "alarmo/"
+        const val ALARM_STATE = "alarm_state"
 
         private val topicsList = ArrayList<String>()
 

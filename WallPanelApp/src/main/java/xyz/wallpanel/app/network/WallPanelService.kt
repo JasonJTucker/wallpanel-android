@@ -55,7 +55,8 @@ import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_A
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_OPEN_SETTINGS
 import xyz.wallpanel.app.ui.activities.BaseBrowserActivity.Companion.BROADCAST_ACTION_RELOAD_PAGE
 import xyz.wallpanel.app.utils.MqttUtils
-import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_STATUS
+import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_BASE
+import xyz.wallpanel.app.utils.MqttUtils.Companion.ALARM_STATE
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_AUDIO
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_BRIGHTNESS
 import xyz.wallpanel.app.utils.MqttUtils.Companion.COMMAND_CAMERA
@@ -382,7 +383,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
 
     override fun onMQTTMessage(id: String, topic: String, payload: String) {
         Timber.i("onMQTTMessage: $id, $topic, $payload")
-        processCommand(payload)
+        processCommand(topic, payload)
     }
 
     private fun publishCommand(command: String, data: JSONObject) {
@@ -464,7 +465,7 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                     result = processCommand(body)
                 } else if (request.body is StringBody) {
                     Timber.i("POST String Arrived (command)")
-                    result = processCommand((request.body as StringBody).get())
+                    result = processCommand("http", (request.body as StringBody).get())
                 }
                 val j = JSONObject()
                 try {
@@ -624,9 +625,13 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
             }
             if (commandJson.has(COMMAND_WAKE)) {
                 if (commandJson.getBoolean(COMMAND_WAKE).or(false)) {
-                    val fallback = configuration.inactivityTime/1000 // if no wake time, use inactivity time, convert to seconds
-                    val wakeTime = commandJson.optLong(COMMAND_WAKETIME, fallback) * 1000 // convert to milliseconds
-                    if(wakeTime > 0) {
+                    val fallback =
+                        configuration.inactivityTime / 1000 // if no wake time, use inactivity time, convert to seconds
+                    val wakeTime = commandJson.optLong(
+                        COMMAND_WAKETIME,
+                        fallback
+                    ) * 1000 // convert to milliseconds
+                    if (wakeTime > 0) {
                         wakeScreenOn(wakeTime)
                     } else {
                         wakeScreen()
@@ -679,12 +684,6 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
                 )
                 updateWeather(newWeather)
             }
-            // additions for receiving alarm information via MQTT
-            if (commandJson.has(ALARM_STATUS)) {
-                Timber.d("CommandJSON for alarm state:")
-                Timber.d(commandJson.toString())
-                updateAlarmStatus(commandJson.getString("alarm_status"))
-            }
         } catch (ex: JSONException) {
             Timber.e("Invalid JSON passed as a command: ${commandJson.toString()}")
             return false
@@ -693,13 +692,20 @@ class WallPanelService : LifecycleService(), MQTTModule.MQTTListener {
         return true
     }
 
-    private fun processCommand(command: String): Boolean {
-        Timber.d("processCommand Called -> $command")
-        return try {
-            processCommand(JSONObject(command))
-        } catch (ex: JSONException) {
-            Timber.e("Invalid JSON passed as a command: $command")
-            false
+    private fun processCommand(topic: String, command: String): Boolean {
+        Timber.d("Attempting to processCommand $command with topic $topic")
+        if (topic == ALARM_BASE + ALARM_STATE)
+        {
+            Timber.d("Alarm status updated to $command")
+            updateAlarmStatus(command)
+            return true
+        } else {
+            return try {
+                processCommand(JSONObject(command))
+            } catch (ex: JSONException) {
+                Timber.e("Invalid JSON passed as a command: $command")
+                false
+            }
         }
     }
 
